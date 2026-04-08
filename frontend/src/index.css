@@ -1,0 +1,58 @@
+:root {
+  --app-accent: #2563EB;
+  --app-accent-hover: #1D4ED8;
+  --app-accent-light: rgba(37, 99, 235, 0.08);
+  --app-blue: #0F2537;
+  --app-blue-light: #1D3A54;
+  --app-blue-faint: #e8edf2;
+  --app-bg-main: #FFFFFF;
+  --app-bg-light: #F4F6F8;
+  --app-border: #DCDFE3;
+  --app-text-dark: #1A1A1A;
+  --app-text-muted: #626B74;
+  --app-text-light: #FFFFFF;
+  --app-success: #2E7D32;
+  --app-success-light: #e8f5e9;
+  --app-discount: #D32F2F;
+  --app-discount-light: #ffebee;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.09);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.13);
+  --transition: 0.18s ease;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--app-text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--app-bg-light);
+}
+
+/* Prevent inputs from overflowing their parent */
+input, select, textarea, button {
+  box-sizing: border-box;
+  max-width: 100%;
+  font-family: inherit;
+}
+
+/* Suppress Edge/IE password reveal button */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
