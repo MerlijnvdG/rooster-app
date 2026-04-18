@@ -177,6 +177,7 @@ class SchedulePage extends LitElement {
       background: #fff;
     }
     .add-day-label { display: none; }
+    @media (min-width: 601px) { .add-day-label { display: inline; } }
 
     /* diensten per dag */
     .day-shifts {
@@ -197,6 +198,7 @@ class SchedulePage extends LitElement {
       flex: 1 1 200px; min-width: 0;
       transition: box-shadow 0.15s; cursor: pointer;
     }
+    @media (max-width: 480px) { .shift-card { flex: 1 1 100%; } }
     .shift-card:hover { box-shadow: var(--shadow-sm); }
 
     .emp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -233,6 +235,15 @@ class SchedulePage extends LitElement {
     .skeleton { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
     .skel { height: 90px; border-radius: 12px; background: linear-gradient(90deg, #f0f2f4 25%, #e8eaec 50%, #f0f2f4 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    @media (max-width: 600px) {
+      .week-grid { padding: 0.75rem; }
+      .day-shifts { padding: 0.6rem 0.75rem; }
+      .day-header { padding: 0.55rem 0.75rem; }
+      .toolbar-tabs { padding: 0.5rem 0.75rem 0; }
+      .toolbar-nav { padding: 0.4rem 0.75rem; }
+      .week-center { min-width: 110px; }
+    }
   `;
 
   constructor() {
