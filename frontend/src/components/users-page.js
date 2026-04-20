@@ -252,6 +252,13 @@ class UsersPage extends LitElement {
 
     .empty { text-align: center; padding: 3rem; color: var(--app-text-muted); }
     .error-bar { background: #ffebee; border: 1px solid rgba(211,47,47,0.3); color: #D32F2F; border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
+
+    @media (max-width: 600px) {
+      .toolbar-row { padding-left: 1rem; padding-right: 1rem; }
+      .content { padding: 1rem; }
+      .stat-card { padding: 0.5rem 0.75rem; }
+      .stat-val { font-size: 1.2rem; }
+    }
   `;
 
   constructor() {
