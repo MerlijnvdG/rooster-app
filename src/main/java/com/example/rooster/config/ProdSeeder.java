@@ -1,6 +1,8 @@
 package com.example.rooster.config;
 
+import com.example.rooster.entity.Location;
 import com.example.rooster.entity.User;
+import com.example.rooster.repository.LocationRepository;
 import com.example.rooster.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -12,16 +14,22 @@ import org.springframework.stereotype.Component;
 public class ProdSeeder implements CommandLineRunner {
 
     private final UserRepository userRepo;
+    private final LocationRepository locationRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public ProdSeeder(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public ProdSeeder(UserRepository userRepo, LocationRepository locationRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
+        this.locationRepo = locationRepo;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
         if (userRepo.count() > 0) return;
+
+        locationRepo.save(new Location("Centrum"));
+        locationRepo.save(new Location("Zuid"));
+        locationRepo.save(new Location("Noord"));
 
         User admin = new User();
         admin.setUsername("admin");
