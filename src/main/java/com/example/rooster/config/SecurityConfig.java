@@ -1,10 +1,8 @@
 package com.example.rooster.config;
 
 import com.example.rooster.security.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,9 +26,6 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
-
-    @Value("${app.cors.allowed-origins}")
-    private String allowedOrigins;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -64,13 +59,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/", "/index.html", "/assets/**", "/favicon.svg", "/manifest.json").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/locations").authenticated()
-                .requestMatchers("/api/shifts/**").authenticated()
-                .requestMatchers("/api/leave-requests/**").authenticated()
-                .requestMatchers("/api/notifications/**").authenticated()
                 .requestMatchers("/api/users/**").hasRole("EMPLOYER")
-                .anyRequest().authenticated()
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
             )
             .headers(h -> h.frameOptions(f -> f.sameOrigin()))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
