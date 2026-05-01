@@ -176,13 +176,12 @@
   `;constructor(){super(),this._loading=!1,this._error=``,this._pwVisible=!1}async _submit(e){e.preventDefault(),this._error=``,this._loading=!0;let t=e.target;try{let e=await Ie(t.elements.code.value.trim(),t.elements.password.value);N.setUser(e)}catch{this._error=`Ongeldige inlogcode of wachtwoord.`}finally{this._loading=!1}}render(){return T`
       <div class="left">
         <div class="brand-big">Rooster</div>
-        <div class="brand-tagline">Roosterbeheer voor alle filialen</div>
+        <div class="brand-tagline">Roosterapp voor de filialen</div>
         <ul class="feature-list">
-          <li>Weekrooster plannen per filiaal</li>
-          <li>Medewerkers beheren en toevoegen</li>
-          <li>Diensten eenvoudig aanpassen</li>
-          <li>Urenstatistieken per medewerker</li>
-          <li>Altijd beschikbaar op je telefoon</li>
+          <li>Weekrooster per filiaal bekijken</li>
+          <li>Diensten inplannen en aanpassen</li>
+          <li>Verlof aanvragen en beheren</li>
+          <li>Gewerkte uren per medewerker</li>
         </ul>
       </div>
 
@@ -236,13 +235,6 @@
             </button>
           </form>
 
-          <div class="hint">
-            <strong>Demo-accounts — wachtwoord: Welkom@123</strong>
-            Manager: 000001 &bull; Admin: 000002<br>
-            Thomas: 000003 &bull; Lisa: 000004 &bull; Bas: 000005<br>
-            Mike: 000006 &bull; Anna: 000007 &bull; Kevin: 000008<br>
-            Sander: 000009 &bull; Femke: 000010 &bull; Roos: 000011
-          </div>
         </div>
       </div>
     `}};customElements.define(`login-page`,Dt);var Ot=[`Ma`,`Di`,`Wo`,`Do`,`Vr`,`Za`,`Zo`],kt=[`Maandag`,`Dinsdag`,`Woensdag`,`Donderdag`,`Vrijdag`,`Zaterdag`,`Zondag`],At=[`januari`,`februari`,`maart`,`april`,`mei`,`juni`,`juli`,`augustus`,`september`,`oktober`,`november`,`december`];function J(e=0){let t=new Date,n=t.getDay()||7;return t.setDate(t.getDate()-n+1+e*7),t.setHours(0,0,0,0),t}function Y(e,t){let n=new Date(e);return n.setDate(n.getDate()+t),n}function X(e){return`${e.getFullYear()}-${String(e.getMonth()+1).padStart(2,`0`)}-${String(e.getDate()).padStart(2,`0`)}`}function Z(e){return e===X(new Date)}function jt(e){return e<X(new Date)}function Q(e,t){let[n,r]=e.slice(0,5).split(`:`).map(Number),[i,a]=t.slice(0,5).split(`:`).map(Number);return(i*60+a-(n*60+r))/60}var Mt=[`jan`,`feb`,`mrt`,`apr`,`mei`,`jun`,`jul`,`aug`,`sep`,`okt`,`nov`,`dec`];function Nt(e){let t=J(e),n=Y(t,6);return`${t.getDate()} ${Mt[t.getMonth()]} – ${n.getDate()} ${Mt[n.getMonth()]}`}function Pt(e=0){let t=J(e),n=new Date(t.getFullYear(),0,4),r=new Date(n);return r.setDate(n.getDate()-(n.getDay()+6)%7),Math.round((t-r)/(7*864e5))+1}function Ft(e){let t=J(e);return Array.from({length:7},(e,n)=>{let r=Y(t,n);return{date:r,iso:X(r),dayShort:Ot[n],dayFull:kt[n]}})}var It=[`#1976D2`,`#388E3C`,`#7B1FA2`,`#F57C00`,`#00838F`,`#C62828`,`#2E7D32`,`#AD1457`,`#0277BD`,`#558B2F`];function $(e){return It[(e-1)%It.length]}var Lt=class extends M{static properties={options:{type:Array},value:{type:String},placeholder:{type:String},name:{type:String},required:{type:Boolean},searchable:{type:Boolean},_open:{state:!0},_query:{state:!0}};static styles=o`

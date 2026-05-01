@@ -203,13 +203,12 @@ class LoginPage extends LitElement {
     return html`
       <div class="left">
         <div class="brand-big">Rooster</div>
-        <div class="brand-tagline">Roosterbeheer voor alle filialen</div>
+        <div class="brand-tagline">Roosterapp voor de filialen</div>
         <ul class="feature-list">
-          <li>Weekrooster plannen per filiaal</li>
-          <li>Medewerkers beheren en toevoegen</li>
-          <li>Diensten eenvoudig aanpassen</li>
-          <li>Urenstatistieken per medewerker</li>
-          <li>Altijd beschikbaar op je telefoon</li>
+          <li>Weekrooster per filiaal bekijken</li>
+          <li>Diensten inplannen en aanpassen</li>
+          <li>Verlof aanvragen en beheren</li>
+          <li>Gewerkte uren per medewerker</li>
         </ul>
       </div>
 
@@ -263,13 +262,6 @@ class LoginPage extends LitElement {
             </button>
           </form>
 
-          <div class="hint">
-            <strong>Demo-accounts — wachtwoord: Welkom@123</strong>
-            Manager: 000001 &bull; Admin: 000002<br>
-            Thomas: 000003 &bull; Lisa: 000004 &bull; Bas: 000005<br>
-            Mike: 000006 &bull; Anna: 000007 &bull; Kevin: 000008<br>
-            Sander: 000009 &bull; Femke: 000010 &bull; Roos: 000011
-          </div>
         </div>
       </div>
     `;

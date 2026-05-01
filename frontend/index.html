@@ -13,6 +13,11 @@
     <title>Rooster</title>
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="/src/rooster-app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
   </head>
   <body>
     <rooster-app></rooster-app>
