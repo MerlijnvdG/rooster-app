@@ -316,6 +316,15 @@ class EmployeeDashboard extends LitElement {
       text-align: center; padding: 0.6rem;
       color: var(--app-text-muted); font-size: 0.78rem; font-style: italic;
     }
+
+    @media (max-width: 600px) {
+      .hero { padding: 1rem 0.9rem 1.25rem; }
+      .content { padding: 0.75rem; }
+      .week-bar { top: 60px; padding: 0.45rem 0.75rem; }
+      .week-center { min-width: 120px; }
+      .shift-inner { flex-wrap: wrap; gap: 0.5rem; }
+      .shift-time-big { font-size: 0.95rem; }
+    }
   `;
 
   constructor() {
