@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getLeaveRequestsForEmployee, getShiftsForEmployee } from '../api.js';
 import { XIcon, UmbrellaIcon, BuildingIcon } from '../icons.js';
 import { employeeColor, diffHours, getMonday, addDays, toISO } from '../date-utils.js';
@@ -23,7 +23,7 @@ class EmployeeDetailModal extends LitElement {
     }
 
     .modal {
-      background: #fff; border-radius: 20px 20px 0 0;
+      background: var(--app-bg-main); border-radius: 20px 20px 0 0;
       width: 100%; max-width: 520px; max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 -4px 40px rgba(0,0,0,0.2);
@@ -106,16 +106,16 @@ class EmployeeDetailModal extends LitElement {
       font-size: 0.76rem; font-weight: 600;
     }
     .pill-total    { background: var(--app-bg-light); color: var(--app-text-dark); }
-    .pill-pending  { background: #FEF3C7; color: #92400E; }
-    .pill-approved { background: #D1FAE5; color: #065F46; }
+    .pill-pending  { background: var(--app-warning-light); color: var(--app-warning); }
+    .pill-approved { background: var(--app-approved-light); color: var(--app-approved); }
     .pill-rejected { background: #FEE2E2; color: #991B1B; }
 
     .leave-card {
       border-radius: 9px; padding: 0.7rem 0.9rem; margin-bottom: 0.4rem;
       border-left: 3px solid transparent;
     }
-    .leave-card.approved { background: #D1FAE5; border-left-color: #10B981; }
-    .leave-card.pending  { background: #FEF3C7; border-left-color: #F59E0B; }
+    .leave-card.approved { background: var(--app-approved-light); border-left-color: var(--app-approved); }
+    .leave-card.pending  { background: var(--app-warning-light); border-left-color: var(--app-warning); }
     .leave-card.rejected { background: #FEE2E2; border-left-color: #EF4444; }
 
     .leave-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.2rem; }
@@ -125,8 +125,8 @@ class EmployeeDetailModal extends LitElement {
       letter-spacing: 0.4px; padding: 0.12rem 0.45rem;
       border-radius: 20px; white-space: nowrap;
     }
-    .leave-card.approved .leave-status-badge { background: rgba(16,185,129,0.18); color: #065F46; }
-    .leave-card.pending  .leave-status-badge { background: rgba(245,158,11,0.2); color: #92400E; }
+    .leave-card.approved .leave-status-badge { background: rgba(16,185,129,0.18); color: var(--app-approved); }
+    .leave-card.pending  .leave-status-badge { background: rgba(245,158,11,0.2); color: var(--app-warning); }
     .leave-card.rejected .leave-status-badge { background: rgba(239,68,68,0.18); color: #991B1B; }
 
     .leave-reason { font-size: 0.78rem; opacity: 0.8; }

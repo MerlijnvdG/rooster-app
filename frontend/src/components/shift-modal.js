@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { XIcon } from '../icons.js';
 import './searchable-select.js';
 
@@ -20,14 +20,14 @@ class ShiftModal extends LitElement {
 
     .overlay {
       position: fixed; inset: 0;
-      background: rgba(15,37,55,0.6);
+      background: rgba(0,0,0,0.55);
       display: flex; align-items: center; justify-content: center;
       z-index: 200; padding: 1rem;
       backdrop-filter: blur(2px);
     }
 
     .modal {
-      background: #fff;
+      background: var(--app-bg-main);
       border-radius: 16px;
       padding: 0;
       width: 100%;
@@ -81,7 +81,7 @@ class ShiftModal extends LitElement {
       font-size: 0.92rem;
       outline: none;
       color: var(--app-text-dark);
-      background: #fafbfc;
+      background: var(--app-bg-main);
       transition: border-color 0.18s, box-shadow 0.18s;
       -webkit-tap-highlight-color: transparent;
     }
@@ -89,16 +89,16 @@ class ShiftModal extends LitElement {
     input:focus {
       border-color: var(--app-accent);
       box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-      background: #fff;
+      background: var(--app-bg-main);
     }
 
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
     .row .field { margin-bottom: 0; }
 
     .error {
-      background: #ffebee;
+      background: var(--app-discount-light);
       border: 1px solid rgba(211,47,47,0.3);
-      color: #D32F2F;
+      color: var(--app-discount);
       border-radius: 8px;
       padding: 0.6rem 0.9rem;
       font-size: 0.84rem;
@@ -126,7 +126,7 @@ class ShiftModal extends LitElement {
     }
 
     .btn-cancel {
-      background: #fff;
+      background: var(--app-bg-main);
       color: var(--app-text-dark);
       border: 1.5px solid var(--app-border);
     }

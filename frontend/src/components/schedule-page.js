@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { ChevronLeft, ChevronRight, PlusIcon, EditIcon, TrashIcon } from '../icons.js';
 import { getLocations, getShiftsByLocation, getAllEmployees, createShift, updateShift, deleteShift } from '../api.js';
 import { getWeekDays, toISO, addDays, getMonday, formatWeekShort, getWeekNumber, employeeColor, diffHours } from '../date-utils.js';
@@ -26,30 +26,27 @@ class SchedulePage extends LitElement {
 
     /* toolbar */
     .toolbar {
-      background: #fff;
+      background: var(--app-bg-main);
       border-bottom: 1px solid var(--app-border);
       position: sticky; top: 0; z-index: 50;
     }
 
-    /* Location tabs row */
-    .toolbar-tabs {
-      display: flex; align-items: center; gap: 0.35rem;
-      padding: 0.6rem 1rem 0;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+    /* alles op een rij */
+    .toolbar-nav {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
     }
-    .toolbar-tabs::-webkit-scrollbar { display: none; }
+    .toolbar-nav::-webkit-scrollbar { display: none; }
 
     .tab {
-      padding: 0.4rem 1rem;
+      padding: 0.38rem 0.9rem;
       border-radius: 20px;
       border: 1.5px solid var(--app-border);
       background: transparent;
       font-size: 0.85rem; font-weight: 500;
       cursor: pointer; color: var(--app-text-muted);
-      transition: all 0.15s; white-space: nowrap;
-      flex-shrink: 0;
+      transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
     }
     .tab.active {
       background: var(--app-accent);
@@ -58,16 +55,12 @@ class SchedulePage extends LitElement {
     }
     .tab:hover:not(.active) { border-color: var(--app-accent); color: var(--app-accent); }
 
-    /* Week navigation row */
-    .toolbar-nav {
-      display: flex; align-items: center; gap: 0.25rem;
-      padding: 0.45rem 1rem;
-    }
+    .tab-divider { width: 1px; height: 20px; background: var(--app-border); flex-shrink: 0; }
 
     .week-nav {
       display: flex; align-items: center;
       border: 1.5px solid var(--app-border);
-      border-radius: 10px; background: #fff;
+      border-radius: 10px; background: var(--app-bg-main);
       overflow: hidden; flex-shrink: 0;
     }
 
@@ -105,51 +98,51 @@ class SchedulePage extends LitElement {
     .error-bar {
       margin: 0.75rem 1rem;
       padding: 0.7rem 1rem;
-      background: #ffebee; border: 1px solid rgba(211,47,47,0.25);
-      color: #C62828; border-radius: 8px; font-size: 0.84rem;
+      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.25);
+      color: var(--app-discount); border-radius: 8px; font-size: 0.84rem;
     }
 
     /* dagen */
     .week-grid {
       padding: 1rem;
       box-sizing: border-box;
-      display: flex; flex-direction: column; gap: 0.65rem;
+      display: flex; flex-direction: column; gap: 1.1rem;
     }
 
     .day-card {
-      background: #fff;
+      background: var(--app-bg-main);
       border-radius: 12px;
       border: 1.5px solid var(--app-border);
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--app-shadow-card);
     }
 
     .day-card.today {
       border-color: var(--app-accent);
-      box-shadow: 0 0 0 2px rgba(37,99,235,0.12);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.2), var(--app-shadow-card);
     }
 
     .day-card.closed { opacity: 0.5; }
-    .day-card.closed .day-header { background: var(--app-bg-light); }
+    .day-card.closed .day-header { background: var(--app-card-header); }
 
     .day-header {
       display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.65rem 1rem;
-      border-bottom: 1px solid var(--app-border);
-      background: var(--app-bg-light);
+      padding: 0.75rem 1rem;
+      border-bottom: 1.5px solid var(--app-border);
+      background: var(--app-card-header);
     }
 
-    .day-card.today .day-header { background: rgba(37,99,235,0.06); }
+    .day-card.today .day-header { background: rgba(37,99,235,0.12); }
 
-    .day-label { display: flex; align-items: baseline; gap: 0.4rem; flex: 1; min-width: 0; }
+    .day-label { display: flex; align-items: baseline; gap: 0.5rem; flex: 1; min-width: 0; }
 
     .day-name {
-      font-size: 0.9rem; font-weight: 700; color: var(--app-text-dark);
+      font-size: 0.95rem; font-weight: 800; color: var(--app-text-dark);
       white-space: nowrap;
     }
     .day-card.today .day-name { color: var(--app-accent); }
 
-    .day-date-str { font-size: 0.78rem; color: var(--app-text-muted); white-space: nowrap; }
+    .day-date-str { font-size: 0.8rem; color: var(--app-text-muted); white-space: nowrap; }
 
     .day-meta { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
 
@@ -174,7 +167,7 @@ class SchedulePage extends LitElement {
     .add-day-btn:hover {
       border-color: var(--app-accent);
       color: var(--app-accent);
-      background: #fff;
+      background: var(--app-bg-main);
     }
     .add-day-label { display: none; }
     @media (min-width: 601px) { .add-day-label { display: inline; } }
@@ -223,24 +216,24 @@ class SchedulePage extends LitElement {
 
     .icon-btn {
       width: 36px; height: 36px; border: none;
-      background: rgba(0,0,0,0.07); border-radius: 7px; cursor: pointer;
+      background: var(--app-icon-btn-bg); border-radius: 7px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       color: var(--app-text-muted); transition: background 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
-    .icon-btn:hover { background: rgba(0,0,0,0.13); color: var(--app-text-dark); }
-    .icon-btn.del:hover { background: #ffebee; color: #C62828; }
+    .icon-btn:hover { background: var(--app-icon-btn-hover); color: var(--app-text-dark); }
+    .icon-btn.del:hover { background: var(--app-discount-light); color: var(--app-discount); }
 
     /* laden */
     .skeleton { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
-    .skel { height: 90px; border-radius: 12px; background: linear-gradient(90deg, #f0f2f4 25%, #e8eaec 50%, #f0f2f4 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    .skel { height: 90px; border-radius: 12px; background: linear-gradient(90deg,var(--app-bg-light) 25%,var(--app-border) 50%,var(--app-bg-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     @media (max-width: 600px) {
-      .week-grid { padding: 0.75rem; }
+      .week-grid { padding: 0.75rem; gap: 0.85rem; }
       .day-shifts { padding: 0.6rem 0.75rem; }
-      .day-header { padding: 0.55rem 0.75rem; }
-      .toolbar-tabs { padding: 0.5rem 0.75rem 0; }
+      .day-header { padding: 0.65rem 0.75rem; }
+
       .toolbar-nav { padding: 0.4rem 0.75rem; }
       .week-center { min-width: 110px; }
     }
@@ -324,13 +317,12 @@ class SchedulePage extends LitElement {
 
     return html`
       <div class="toolbar">
-        <div class="toolbar-tabs">
+        <div class="toolbar-nav">
           ${this._locations.map(l => html`
             <button class="tab ${this._activeLocationId === l.id ? 'active' : ''}"
               @click=${() => this._setLocation(l.id)}>${l.name}</button>
           `)}
-        </div>
-        <div class="toolbar-nav">
+          <div class="tab-divider"></div>
           <div class="week-nav">
             <button class="nav-arrow" @click=${this._prevWeek}>${ChevronLeft(14)}</button>
             <div class="week-center">

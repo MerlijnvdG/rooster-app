@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getAllUsers, createUser, updateUser, deleteUser, getLocations } from '../api.js';
 import { employeeColor } from '../date-utils.js';
 import { SearchIcon, PlusIcon, UsersIcon, TagIcon, KeyIcon, EditIcon, TrashIcon, XIcon, EyeIcon } from '../icons.js';
@@ -19,7 +19,7 @@ class UserModal extends LitElement {
       display: flex; align-items: center; justify-content: center;
       z-index: 200; padding: 1rem; backdrop-filter: blur(2px);
     }
-    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 460px; overflow: hidden; box-shadow: var(--shadow-lg); }
+    .modal { background: var(--app-bg-main); border-radius: 16px; width: 100%; max-width: 460px; overflow: hidden; box-shadow: var(--shadow-lg); }
     .modal-header { background: var(--app-blue); color: #fff; padding: 1.1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
     .modal-header h3 { font-size: 1rem; font-weight: 700; }
     .close-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -27,13 +27,13 @@ class UserModal extends LitElement {
     .modal-body { padding: 1.5rem; }
     .field { margin-bottom: 1rem; }
     label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--app-text-muted); margin-bottom: 0.4rem; }
-    input { box-sizing: border-box; width: 100%; padding: 0.75rem 0.9rem; border: 1.5px solid var(--app-border); border-radius: 8px; font-size: 0.92rem; outline: none; color: var(--app-text-dark); background: #fafbfc; transition: border-color 0.18s, box-shadow 0.18s; }
-    input:focus, select:focus { border-color: var(--app-accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: #fff; }
+    input { box-sizing: border-box; width: 100%; padding: 0.75rem 0.9rem; border: 1.5px solid var(--app-border); border-radius: 8px; font-size: 0.92rem; outline: none; color: var(--app-text-dark); background: var(--app-bg-main); transition: border-color 0.18s, box-shadow 0.18s; }
+    input:focus, select:focus { border-color: var(--app-accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); background: var(--app-bg-main); }
     .hint { font-size: 0.78rem; color: var(--app-text-muted); margin-top: 0.3rem; }
-    .error { background: #ffebee; border: 1px solid rgba(211,47,47,0.3); color: #D32F2F; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.84rem; margin-bottom: 1rem; }
+    .error { background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.3); color: var(--app-discount); border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.84rem; margin-bottom: 1rem; }
     .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--app-border); display: flex; gap: 0.75rem; justify-content: flex-end; background: var(--app-bg-light); }
     .btn { padding: 0.65rem 1.4rem; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; }
-    .btn-cancel { background: #fff; color: var(--app-text-dark); border: 1.5px solid var(--app-border); }
+    .btn-cancel { background: var(--app-bg-main); color: var(--app-text-dark); border: 1.5px solid var(--app-border); }
     .btn-cancel:hover { background: #f4f6f8; }
     .btn-save { background: var(--app-accent); color: #fff; }
     .btn-save:hover:not(:disabled) { background: var(--app-accent-hover); }
@@ -139,7 +139,7 @@ class UsersPage extends LitElement {
     :host { display: block; overflow-x: hidden; }
 
     .toolbar {
-      background: #fff;
+      background: var(--app-bg-main);
       border-bottom: 1px solid var(--app-border);
       position: sticky; top: 0; z-index: 50;
     }
@@ -158,7 +158,7 @@ class UsersPage extends LitElement {
       font-size: 0.85rem; outline: none; transition: border-color 0.18s;
       background: var(--app-bg-light);
     }
-    .search-wrap input:focus { border-color: var(--app-accent); background: #fff; }
+    .search-wrap input:focus { border-color: var(--app-accent); background: var(--app-bg-main); }
     .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--app-text-muted); display: flex; align-items: center; pointer-events: none; }
 
     searchable-select.filter { flex: 1; min-width: 0; }
@@ -180,7 +180,7 @@ class UsersPage extends LitElement {
     }
 
     .stat-card {
-      background: #fff; border: 1px solid var(--app-border);
+      background: var(--app-bg-main); border: 1px solid var(--app-border);
       border-radius: 10px; padding: 0.65rem 1rem;
       display: flex; align-items: center; gap: 0.65rem;
       box-shadow: var(--shadow-sm);
@@ -198,7 +198,7 @@ class UsersPage extends LitElement {
     }
 
     .user-card {
-      background: #fff;
+      background: var(--app-bg-main);
       border: 1px solid var(--app-border);
       border-radius: 12px;
       padding: 1.1rem 1.25rem;
@@ -251,7 +251,7 @@ class UsersPage extends LitElement {
     .icon-btn.del:hover { background: var(--app-discount-light); color: var(--app-discount); }
 
     .empty { text-align: center; padding: 3rem; color: var(--app-text-muted); }
-    .error-bar { background: #ffebee; border: 1px solid rgba(211,47,47,0.3); color: #D32F2F; border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
+    .error-bar { background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.3); color: var(--app-discount); border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
 
     @media (max-width: 600px) {
       .toolbar-row { padding-left: 1rem; padding-right: 1rem; }

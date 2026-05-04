@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { ChevronDown, SearchIcon } from '../icons.js';
 
 class SearchableSelect extends LitElement {
@@ -25,7 +25,7 @@ class SearchableSelect extends LitElement {
       font-size: 0.92rem;
       outline: none;
       color: var(--app-text-dark);
-      background: #fafbfc;
+      background: var(--app-bg-main);
       cursor: pointer;
       text-align: left;
       position: relative;
@@ -41,7 +41,7 @@ class SearchableSelect extends LitElement {
     .trigger:focus, .trigger.open {
       border-color: var(--app-accent);
       box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-      background: #fff;
+      background: var(--app-bg-main);
     }
 
     .trigger-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -54,10 +54,10 @@ class SearchableSelect extends LitElement {
       position: absolute;
       top: calc(100% + 4px);
       left: 0; right: 0;
-      background: #fff;
+      background: var(--app-bg-main);
       border: 1.5px solid var(--app-border);
       border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      box-shadow: var(--app-shadow-dropdown);
       z-index: 1000;
       overflow: hidden;
     }

@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { XIcon, TrashIcon, AlertIcon } from '../icons.js';
 
 class ConfirmModal extends LitElement {
@@ -21,7 +21,7 @@ class ConfirmModal extends LitElement {
     }
 
     .modal {
-      background: #fff; border-radius: 16px 16px 0 0;
+      background: var(--app-bg-main); border-radius: 16px 16px 0 0;
       width: 100%; max-width: 400px;
       padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
       box-shadow: 0 -4px 32px rgba(0,0,0,0.18);
@@ -38,7 +38,7 @@ class ConfirmModal extends LitElement {
       display: flex; align-items: center; justify-content: center;
     }
     .icon-wrap.danger { background: #FEE2E2; color: #DC2626; }
-    .icon-wrap.info   { background: #FEF3C7; color: #D97706; }
+    .icon-wrap.info   { background: var(--app-warning-light); color: var(--app-warning); }
 
     .modal-title {
       font-size: 1rem; font-weight: 800; color: var(--app-text-dark);
