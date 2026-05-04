@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getAllLeaveRequests, approveLeaveRequest, rejectLeaveRequest } from '../api.js';
 import { CheckIcon, XIcon, AlertIcon, InboxIcon, ClockIcon, UserIcon, ArrowRightIcon } from '../icons.js';
 
@@ -29,12 +29,12 @@ class LeaveRequestsManager extends LitElement {
       padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;
       transition: all 0.15s; -webkit-tap-highlight-color: transparent;
     }
-    .archive-link:hover { border-color: var(--app-accent); color: var(--app-accent); background: #fff; }
+    .archive-link:hover { border-color: var(--app-accent); color: var(--app-accent); background: var(--app-bg-main); }
 
     .alert {
       display: flex; align-items: flex-start; gap: 0.5rem;
       border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin-bottom: 1rem;
-      background: #ffebee; border: 1px solid rgba(211,47,47,0.25); color: #C62828;
+      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.25); color: var(--app-discount);
     }
 
     .employee-group { margin-bottom: 1.5rem; }
@@ -51,7 +51,7 @@ class LeaveRequestsManager extends LitElement {
     }
 
     .request-card {
-      background: #fff; border: 1px solid var(--app-border);
+      background: var(--app-bg-main); border: 1px solid var(--app-border);
       border-left: 3px solid #F59E0B;
       border-radius: 10px; padding: 1rem 1.15rem; margin-bottom: 0.55rem;
       display: flex; gap: 1rem; align-items: center;
@@ -70,7 +70,7 @@ class LeaveRequestsManager extends LitElement {
       font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
       white-space: nowrap; -webkit-tap-highlight-color: transparent;
     }
-    .btn-approve { background: #D1FAE5; color: #065F46; }
+    .btn-approve { background: var(--app-approved-light); color: var(--app-approved); }
     .btn-approve:hover { background: #10B981; color: #fff; }
     .btn-reject  { background: #FEE2E2; color: #991B1B; }
     .btn-reject:hover  { background: #EF4444; color: #fff; }
@@ -87,7 +87,7 @@ class LeaveRequestsManager extends LitElement {
     }
 
     .modal {
-      background: #fff; border-radius: 20px 20px 0 0;
+      background: var(--app-bg-main); border-radius: 20px 20px 0 0;
       width: 100%; max-width: 480px;
       padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
       box-shadow: 0 -4px 40px rgba(0,0,0,0.18);
@@ -121,7 +121,7 @@ class LeaveRequestsManager extends LitElement {
     }
     .modal textarea:focus {
       border-color: var(--app-accent);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.12); background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12); background: var(--app-bg-main);
     }
 
     .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; }

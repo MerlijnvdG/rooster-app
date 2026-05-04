@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { createLeaveRequest, getMyLeaveRequests, deleteLeaveRequest } from '../api.js';
 import { PlusIcon, TrashIcon, CheckIcon, AlertIcon, ClockIcon, UmbrellaIcon, ArrowRightIcon, XIcon } from '../icons.js';
 import './confirm-modal.js';
@@ -30,7 +30,7 @@ class LeaveRequestPage extends LitElement {
       padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;
       transition: all 0.15s; -webkit-tap-highlight-color: transparent;
     }
-    .archive-btn:hover { border-color: var(--app-accent); color: var(--app-accent); background: #fff; }
+    .archive-btn:hover { border-color: var(--app-accent); color: var(--app-accent); background: var(--app-bg-main); }
 
     .btn-new {
       display: inline-flex; align-items: center; gap: 0.4rem;
@@ -53,7 +53,7 @@ class LeaveRequestPage extends LitElement {
     }
 
     .modal {
-      background: #fff;
+      background: var(--app-bg-main);
       border-radius: 20px 20px 0 0;
       width: 100%; max-width: 520px;
       padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
@@ -99,7 +99,7 @@ class LeaveRequestPage extends LitElement {
     input[type="date"]:focus, textarea:focus {
       border-color: var(--app-accent);
       box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-      background: #fff;
+      background: var(--app-bg-main);
     }
 
     textarea {
@@ -113,8 +113,8 @@ class LeaveRequestPage extends LitElement {
       border-radius: 9px; padding: 0.75rem 1rem;
       font-size: 0.84rem; margin-bottom: 1rem;
     }
-    .alert.error   { background: #ffebee; border: 1px solid rgba(211,47,47,0.2); color: #C62828; }
-    .alert.success { background: #e8f5e9; border: 1px solid rgba(56,142,60,0.2); color: #2E7D32; }
+    .alert.error   { background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.2); color: var(--app-discount); }
+    .alert.success { background: var(--app-success-light); border: 1px solid rgba(56,142,60,0.2); color: var(--app-success); }
 
     .modal-actions {
       display: flex; gap: 0.75rem; justify-content: flex-end;
@@ -150,7 +150,7 @@ class LeaveRequestPage extends LitElement {
     }
 
     .request-card {
-      background: #fff; border: 1px solid var(--app-border);
+      background: var(--app-bg-main); border: 1px solid var(--app-border);
       border-left: 3px solid #F59E0B;
       border-radius: 10px; padding: 1rem 1.15rem; margin-bottom: 0.55rem;
       display: flex; gap: 1rem; align-items: center;
@@ -164,7 +164,7 @@ class LeaveRequestPage extends LitElement {
     .badge {
       font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.5rem;
       border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px;
-      background: #FEF3C7; color: #92400E;
+      background: var(--app-warning-light); color: var(--app-warning);
     }
     .badge-time {
       font-size: 0.72rem; color: var(--app-text-muted);

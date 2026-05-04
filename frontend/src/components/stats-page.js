@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getLocations, getStats } from '../api.js';
 import { getMonday, addDays, toISO, formatWeekShort, getWeekNumber, employeeColor, diffHours } from '../date-utils.js';
 import { ChevronLeft, ChevronRight } from '../icons.js';
@@ -14,7 +14,7 @@ class StatsPage extends LitElement {
     :host { display: block; }
 
     .toolbar {
-      background: #fff; border-bottom: 1px solid var(--app-border);
+      background: var(--app-bg-main); border-bottom: 1px solid var(--app-border);
       position: sticky; top: 0; z-index: 50;
     }
 
@@ -38,7 +38,7 @@ class StatsPage extends LitElement {
     .week-nav {
       display: flex; align-items: center;
       border: 1.5px solid var(--app-border);
-      border-radius: 10px; background: #fff;
+      border-radius: 10px; background: var(--app-bg-main);
       overflow: hidden; flex-shrink: 0;
     }
 
@@ -63,7 +63,7 @@ class StatsPage extends LitElement {
 
     /* totalen */
     .summary-row { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .sum-card { background: var(--app-text-dark); color: #fff; border-radius: 12px; padding: 1rem 1.5rem; flex: 1; min-width: 140px; }
+    .sum-card { background: var(--app-blue); color: #fff; border-radius: 12px; padding: 1rem 1.5rem; flex: 1; min-width: 140px; }
     .sum-card.orange { background: var(--app-accent); font-size: 0.95rem; }
     .sum-card.green { background: var(--app-success); }
     .sum-val { font-size: 2rem; font-weight: 900; line-height: 1; }
@@ -73,7 +73,7 @@ class StatsPage extends LitElement {
     .emp-list { display: flex; flex-direction: column; gap: 0.75rem; }
 
     .emp-card {
-      background: #fff; border: 1px solid var(--app-border);
+      background: var(--app-bg-main); border: 1px solid var(--app-border);
       border-radius: 12px; overflow: hidden;
       box-shadow: var(--shadow-sm);
     }
@@ -106,7 +106,7 @@ class StatsPage extends LitElement {
     .shift-chip .chip-time { opacity: 0.8; }
 
     .empty { text-align: center; padding: 3rem; color: var(--app-text-muted); }
-    .error-bar { background: #ffebee; border: 1px solid rgba(211,47,47,0.3); color: #D32F2F; border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
+    .error-bar { background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.3); color: var(--app-discount); border-radius: 8px; padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
 
     @media (max-width: 600px) {
       .toolbar-inner { padding: 0.45rem 1rem; gap: 0.4rem; }

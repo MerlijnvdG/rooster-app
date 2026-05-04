@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getMyLeaveRequests, getAllLeaveRequests } from '../api.js';
 import { ChevronLeft, SearchIcon, CheckIcon, XIcon, ClockIcon, UserIcon } from '../icons.js';
 import { authStore } from '../store.js';
@@ -31,7 +31,7 @@ class LeaveArchivePage extends LitElement {
       width: 100%; padding: 0.55rem 0.9rem 0.55rem 2.2rem;
       border: 1.5px solid var(--app-border);
       border-radius: 8px; font-size: 0.88rem; outline: none; box-sizing: border-box;
-      background: #fff; color: var(--app-text-dark);
+      background: var(--app-bg-main); color: var(--app-text-dark);
       transition: border-color 0.15s;
     }
     .search-wrap input:focus { border-color: var(--app-accent); }
@@ -60,7 +60,7 @@ class LeaveArchivePage extends LitElement {
     .emp-count { font-size: 0.7rem; color: var(--app-text-muted); }
 
     .request-card {
-      background: #fff; border: 1px solid var(--app-border);
+      background: var(--app-bg-main); border: 1px solid var(--app-border);
       border-radius: 10px; padding: 0.9rem 1.15rem; margin-bottom: 0.5rem;
       display: flex; gap: 0.85rem; align-items: flex-start;
     }
@@ -77,14 +77,14 @@ class LeaveArchivePage extends LitElement {
     .request-body { flex: 1; min-width: 0; }
     .request-dates { font-size: 0.9rem; font-weight: 700; color: var(--app-text-dark); }
     .request-reason { font-size: 0.8rem; color: var(--app-text-muted); margin-top: 0.15rem; }
-    .rejection-note { font-size: 0.78rem; color: #C62828; margin-top: 0.25rem; font-style: italic; }
+    .rejection-note { font-size: 0.78rem; color: var(--app-discount); margin-top: 0.25rem; font-style: italic; }
     .request-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem; flex-wrap: wrap; }
 
     .badge {
       font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.5rem;
       border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px;
     }
-    .badge.approved { background: #D1FAE5; color: #065F46; }
+    .badge.approved { background: var(--app-approved-light); color: var(--app-approved); }
     .badge.rejected { background: #FEE2E2; color: #991B1B; }
     .badge-time { font-size: 0.72rem; color: var(--app-text-muted); display: flex; align-items: center; gap: 0.2rem; }
   `;

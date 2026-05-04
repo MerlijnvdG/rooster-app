@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getMonthlySummary } from '../api.js';
 import { ChevronLeft, ChevronRight } from '../icons.js';
 
@@ -32,7 +32,7 @@ class MonthlySummaryPage extends LitElement {
     .nav-arrow {
       width: 34px; height: 34px;
       border: 1.5px solid var(--app-border);
-      background: #fff; border-radius: 8px; cursor: pointer;
+      background: var(--app-bg-main); border-radius: 8px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       color: var(--app-text-muted);
       transition: all 0.15s; flex-shrink: 0;
@@ -43,7 +43,7 @@ class MonthlySummaryPage extends LitElement {
 
     .export-btn {
       display: inline-flex; align-items: center; gap: 0.4rem;
-      background: #fff; border: 1.5px solid var(--app-border);
+      background: var(--app-bg-main); border: 1.5px solid var(--app-border);
       color: var(--app-text-muted); border-radius: 8px;
       padding: 0.45rem 0.9rem; font-size: 0.82rem; font-weight: 600;
       cursor: pointer; white-space: nowrap; transition: all 0.15s;
@@ -53,7 +53,7 @@ class MonthlySummaryPage extends LitElement {
 
     /* tabel */
     .table-wrap {
-      background: #fff;
+      background: var(--app-bg-main);
       border: 1px solid var(--app-border);
       border-radius: 12px;
       overflow: hidden;
@@ -84,7 +84,7 @@ class MonthlySummaryPage extends LitElement {
       transition: background 0.12s;
     }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: #fafbfc; }
+    tbody tr:hover { background: var(--app-bg-main); }
 
     td {
       padding: 0.8rem 1rem;
@@ -114,8 +114,8 @@ class MonthlySummaryPage extends LitElement {
 
     .empty { text-align: center; padding: 3rem 1rem; color: var(--app-text-muted); font-size: 0.9rem; }
     .error-bar {
-      background: #ffebee; border: 1px solid rgba(211,47,47,0.2);
-      color: #C62828; border-radius: 8px; padding: 0.75rem 1rem;
+      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.2);
+      color: var(--app-discount); border-radius: 8px; padding: 0.75rem 1rem;
       font-size: 0.84rem; margin-bottom: 1rem;
     }
     .loading { padding: 2rem; text-align: center; color: var(--app-text-muted); }

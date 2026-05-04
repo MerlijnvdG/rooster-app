@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { getNotifications, getUnreadCount, markNotificationsRead } from '../api.js';
 import { BellIcon, ArrowRightIcon, UmbrellaIcon, CheckIcon, XIcon } from '../icons.js';
 
@@ -57,7 +57,7 @@ class NotificationBell extends LitElement {
 
     .dropdown {
       position: absolute; top: calc(100% + 10px); right: -4px;
-      background: #fff;
+      background: var(--app-bg-main);
       border: 1px solid var(--app-border);
       border-radius: 14px; width: 310px;
       max-height: 400px;
@@ -97,9 +97,9 @@ class NotificationBell extends LitElement {
       -webkit-tap-highlight-color: transparent;
     }
     .notif-item:last-child { border-bottom: none; }
-    .notif-item.unread { background: rgba(37,99,235,0.035); }
+    .notif-item.unread { background: var(--app-notif-unread); }
     .notif-item:hover { background: var(--app-bg-light); }
-    .notif-item:active { background: rgba(0,0,0,0.06); }
+    .notif-item:active { background: var(--app-icon-btn-hover); }
 
     .notif-icon-wrap {
       width: 34px; height: 34px; border-radius: 10px;

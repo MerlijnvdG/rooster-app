@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { authStore } from '../store.js';
 import { updateUser } from '../api.js';
 import { employeeColor } from '../date-utils.js';
@@ -55,7 +55,7 @@ class ProfilePage extends LitElement {
 
     /* kaarten */
     .card {
-      background: #fff;
+      background: var(--app-bg-main);
       border: 1px solid var(--app-border);
       border-radius: 14px;
       margin-bottom: 1rem;
@@ -107,7 +107,7 @@ class ProfilePage extends LitElement {
     }
 
     .role-employer { background: rgba(37,99,235,0.1); color: var(--app-accent); }
-    .role-employee { background: rgba(46,125,50,0.1); color: #2E7D32; }
+    .role-employee { background: rgba(46,125,50,0.1); color: var(--app-success); }
 
     /* formulier */
     .field { margin-bottom: 1rem; }
@@ -140,7 +140,7 @@ class ProfilePage extends LitElement {
     input:focus {
       border-color: var(--app-accent);
       box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-      background: #fff;
+      background: var(--app-bg-main);
     }
 
     .pw-wrap input { padding-right: 3rem; }
@@ -170,14 +170,14 @@ class ProfilePage extends LitElement {
 
     .success-msg {
       display: flex; align-items: center; gap: 0.5rem;
-      background: #e8f5e9; border: 1px solid rgba(46,125,50,0.25);
-      color: #2E7D32; border-radius: 8px;
+      background: var(--app-success-light); border: 1px solid rgba(46,125,50,0.25);
+      color: var(--app-success); border-radius: 8px;
       padding: 0.7rem 1rem; font-size: 0.84rem; margin-bottom: 1rem;
     }
 
     .error-msg {
-      background: #ffebee; border: 1px solid rgba(211,47,47,0.25);
-      color: #C62828; border-radius: 8px;
+      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.25);
+      color: var(--app-discount); border-radius: 8px;
       padding: 0.7rem 1rem; font-size: 0.84rem; margin-bottom: 1rem;
     }
 
@@ -191,8 +191,8 @@ class ProfilePage extends LitElement {
     }
 
     .btn-logout:hover {
-      border-color: #C62828; color: #C62828;
-      background: #ffebee;
+      border-color: var(--app-discount); color: var(--app-discount);
+      background: var(--app-discount-light);
     }
 
     @media (max-width: 480px) {
