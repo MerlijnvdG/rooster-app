@@ -1,369 +1,375 @@
-import { LitElement, html, css } from 'lit';
+﻿import { LitElement, html, css } from 'lit';
 import { authStore } from '../store.js';
-import { getMyShifts, getTeamShifts, getMyLeaveRequests } from '../api.js';
-import { getWeekDays, getMonday, addDays, toISO, formatWeekShort, getWeekNumber, diffHours, MONTHS, isToday, isPast, employeeColor } from '../date-utils.js';
-import { ChevronLeft, ChevronRight, HomeIcon, MapPinIcon, CalendarIcon, UsersIcon } from '../icons.js';
+import { getMyShifts, getTeamShifts, getLocations, getMyLeaveRequests } from '../api.js';
+import {
+  getWeekDays, getMonday, addDays, toISO, formatWeekShort,
+  getWeekNumber, diffHours, MONTHS, isToday, employeeColor,
+} from '../date-utils.js';
+import { ChevronLeft, ChevronRight, MapPinIcon, CalendarIcon } from '../icons.js';
+
+const DAYS_NL = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
 class EmployeeDashboard extends LitElement {
   static properties = {
-    _weekOffset:    { state: true },
-    _shifts:        { state: true },
-    _teamShifts:    { state: true },
-    _leaveRequests: { state: true },
-    _loading:       { state: true },
-    _error:         { state: true },
-    _view:          { state: true },
+    _tab:              { state: true },
+    _weekOffset:       { state: true },
+    _shifts:           { state: true },
+    _teamShifts:       { state: true },
+    _locations:        { state: true },
+    _activeLocationId: { state: true },
+    _leaveRequests:    { state: true },
+    _loading:          { state: true },
+    _error:            { state: true },
   };
 
   static styles = css`
-    :host { display: block; background: var(--app-bg-light); overflow-x: hidden; }
+    :host { display: block; background: var(--app-bg-light); min-height: calc(100vh - 60px); }
 
-    /* Hero */
-    .hero {
+    /* header */
+    .dash-header {
       background: var(--app-blue);
-      padding: 1.25rem 1rem 1.5rem;
+      position: sticky; top: 60px; z-index: 40;
+      padding: 0.85rem 1rem 0;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+
+    /* tabs */
+    .header-tabs {
+      display: flex; gap: 0.4rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 0.3rem;
+    }
+
+    .main-tab {
+      flex: 1; padding: 0.65rem 1rem;
+      border-radius: 9px; border: none;
+      background: transparent;
+      font-size: 0.92rem; font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer; transition: all 0.18s; line-height: 1.2;
+    }
+    .main-tab.active {
+      background: rgba(255,255,255,0.18);
       color: #fff;
-    }
-
-    .hero-top {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .greeting { font-size: 1.35rem; font-weight: 800; line-height: 1.2; }
-    .greeting-sub { font-size: 0.82rem; opacity: 0.8; margin-top: 0.25rem; }
-
-    .view-toggle {
-      display: flex; gap: 0.2rem;
-      background: rgba(255,255,255,0.2);
-      border-radius: 8px; padding: 0.2rem;
-      flex-shrink: 0;
-    }
-
-    .view-btn {
-      padding: 0.35rem 0.8rem;
-      border: none; background: none;
-      color: rgba(255,255,255,0.75);
-      font-size: 0.8rem; font-weight: 500;
-      border-radius: 6px; cursor: pointer;
-      transition: all 0.15s; min-height: 34px;
-    }
-
-    .view-btn.active {
-      background: #fff;
-      color: var(--app-accent);
       font-weight: 700;
     }
+    .main-tab:hover:not(.active) { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.1); }
 
-    /* stats */
-    .stats-row { display: flex; gap: 0.6rem; }
-
-    .stat {
-      flex: 1;
-      background: rgba(255,255,255,0.18);
-      border-radius: 10px;
-      padding: 0.7rem 0.75rem;
-      text-align: center;
-    }
-
-    .stat-val { font-size: 1.5rem; font-weight: 900; line-height: 1; }
-    .stat-lbl { font-size: 0.68rem; opacity: 0.8; margin-top: 0.2rem; }
-
-    /* Week nav bar */
-    .week-bar {
-      background: #fff;
-      border-bottom: 1px solid var(--app-border);
-      padding: 0.5rem 1rem;
+    /* weeknavigatie */
+    .header-week {
       display: flex; align-items: center; justify-content: center;
-      position: sticky; top: 0; z-index: 50;
     }
 
     .week-nav {
       display: flex; align-items: center;
-      border: 1.5px solid var(--app-border);
-      border-radius: 10px; background: #fff;
-      overflow: hidden;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 10px; overflow: hidden;
     }
 
     .nav-arrow {
-      width: 36px; height: 38px; border: none; background: none;
-      cursor: pointer; color: var(--app-text-muted);
+      width: 42px; height: 44px; border: none; background: none;
+      cursor: pointer; color: rgba(255,255,255,0.9);
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, color 0.15s; flex-shrink: 0;
+      transition: background 0.15s; flex-shrink: 0;
     }
-
-    .nav-arrow:hover { background: var(--app-bg-light); color: var(--app-text-dark); }
+    .nav-arrow:hover { background: rgba(255,255,255,0.15); }
 
     .week-center {
-      padding: 0.3rem 0.85rem; text-align: center;
-      border-left: 1px solid var(--app-border);
-      border-right: 1px solid var(--app-border);
-      min-width: 140px;
+      padding: 0.35rem 1.3rem; text-align: center;
+      border-left: 1.5px solid rgba(255,255,255,0.2);
+      border-right: 1.5px solid rgba(255,255,255,0.2);
+      min-width: 155px;
     }
     .week-num { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--app-accent); letter-spacing: 0.5px; line-height: 1; }
-    .week-range { font-size: 0.82rem; font-weight: 600; color: var(--app-text-dark); white-space: nowrap; line-height: 1.3; }
+    .week-range { font-size: 0.88rem; font-weight: 700; color: #fff; white-space: nowrap; line-height: 1.3; }
 
-    /* Content */
-    .content { padding: 1rem; }
+    /* stats */
+    .header-stats {
+      display: flex; align-items: center;
+      padding: 0.75rem 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat-item { flex: 1; text-align: center; }
+    .stat-val { font-size: 1.45rem; font-weight: 900; color: #fff; line-height: 1; }
+    .stat-lbl { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.45); margin-top: 0.18rem; }
+
+    .stat-div { width: 1px; height: 32px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+
+    /* filiaal tabs in de header */
+    .header-locs {
+      display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+      overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      padding-bottom: 0.85rem;
+    }
+    .header-locs::-webkit-scrollbar { display: none; }
+
+    .loc-tab {
+      padding: 0.45rem 1.15rem; border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.1);
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; color: rgba(255,255,255,0.75);
+      transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+    }
+    .loc-tab.active {
+      background: var(--app-accent);
+      border-color: var(--app-accent);
+      color: #fff;
+    }
+    .loc-tab:hover:not(.active) { background: rgba(255,255,255,0.18); color: #fff; border-color: rgba(255,255,255,0.4); }
+
+    /* content */
+    .content { padding: 1rem; display: flex; flex-direction: column; gap: 1.1rem; }
 
     .error-bar {
-      background: #ffebee; border: 1px solid rgba(211,47,47,0.25);
-      color: #C62828; border-radius: 8px; padding: 0.7rem 1rem;
-      margin-bottom: 0.75rem; font-size: 0.84rem;
+      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.25);
+      color: var(--app-discount); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.84rem;
     }
 
-    /* === WEEK VIEW === */
-    .day-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    /* leeg */
+    .empty {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 4rem 1.5rem; color: var(--app-text-muted);
+      text-align: center; gap: 0.75rem;
+    }
+    .empty svg { opacity: 0.25; }
+    .empty-title { font-size: 1rem; font-weight: 700; color: var(--app-text-dark); }
+    .empty-sub { font-size: 0.85rem; line-height: 1.6; }
 
-    .day-card {
-      background: #fff;
+    /* laden */
+    .skeleton { padding: 1rem; display: flex; flex-direction: column; gap: 1.1rem; }
+    .skel { border-radius: 14px; background: linear-gradient(90deg,var(--app-bg-light) 25%,var(--app-border) 50%,var(--app-bg-light) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* mijn rooster */
+    .mine-card {
+      background: var(--app-bg-main);
       border: 1.5px solid var(--app-border);
-      border-radius: 12px; overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .mine-card.today-card {
+      border-color: var(--app-accent);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.14), 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .day-card.today-card { border-color: var(--app-accent); }
-
-    .day-row {
-      display: flex; align-items: center; gap: 0.85rem;
-      padding: 0.9rem 1rem;
-    }
-
-    .day-indicator {
-      width: 46px; height: 46px; border-radius: 10px; flex-shrink: 0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: var(--app-bg-light);
-    }
-
-    .day-indicator.today-ind { background: var(--app-accent); color: #fff; }
-    .day-indicator.past-ind { opacity: 0.45; }
-
-    .day-num { font-size: 1.15rem; font-weight: 900; line-height: 1; }
-    .day-short { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.1rem; }
-
-    .day-info { flex: 1; min-width: 0; }
-    .day-full { font-size: 0.92rem; font-weight: 700; color: var(--app-text-dark); }
-    .day-month { font-size: 0.75rem; color: var(--app-text-muted); margin-top: 0.05rem; }
-
-    .free-badge {
-      display: inline-flex; align-items: center; gap: 0.3rem;
-      background: var(--app-bg-light);
-      border: 1px solid var(--app-border);
-      border-radius: 6px; padding: 0.3rem 0.65rem;
-      font-size: 0.78rem; color: var(--app-text-muted); white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .leave-banner {
-      padding: 0.45rem 1rem;
-      font-size: 0.78rem; font-weight: 600;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .leave-banner.approved { background: #D1FAE5; color: #065F46; border-top: 1px solid #A7F3D0; }
-    .leave-banner.pending  { background: #FEF3C7; color: #92400E; border-top: 1px solid #FDE68A; }
-
-    /* Shift block */
-    .shift-block {
-      border-top: 1px solid var(--app-border);
-      padding: 0.75rem 1rem;
-    }
-
-    .shift-inner {
-      display: flex; align-items: center; gap: 0.85rem;
-      background: rgba(37,99,235,0.05);
-      border: 1px solid rgba(37,99,235,0.2);
-      border-radius: 10px;
+    .mine-header {
+      display: flex; align-items: center; gap: 0.9rem;
       padding: 0.85rem 1rem;
+      background: var(--app-card-header);
+      border-bottom: 1.5px solid var(--app-border);
     }
+    .mine-card.today-card .mine-header { background: rgba(37,99,235,0.08); }
 
-    .shift-time-big {
-      font-size: 1.05rem; font-weight: 800;
-      color: var(--app-text-dark);
-      white-space: nowrap; flex-shrink: 0;
+    .mine-date-box {
+      width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--app-blue); color: #fff;
     }
+    .mine-card.today-card .mine-date-box { background: var(--app-accent); }
 
-    .shift-meta { flex: 1; min-width: 0; }
-    .shift-loc { font-size: 0.8rem; color: var(--app-text-muted); margin-top: 0.1rem; display: flex; align-items: center; gap: 0.25rem; }
-    .shift-note { font-size: 0.75rem; color: var(--app-text-muted); font-style: italic; }
+    .mine-date-num { font-size: 1.25rem; font-weight: 900; line-height: 1; }
+    .mine-date-short { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.75; margin-top: 1px; }
 
-    .hours-badge {
-      background: var(--app-accent);
-      color: #fff; font-size: 0.8rem; font-weight: 700;
-      padding: 0.3rem 0.7rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+    .mine-day-info { flex: 1; min-width: 0; }
+    .mine-day-name { font-size: 0.97rem; font-weight: 800; color: var(--app-text-dark); line-height: 1.2; }
+    .mine-card.today-card .mine-day-name { color: var(--app-accent); }
+    .mine-day-date { font-size: 0.78rem; color: var(--app-text-muted); margin-top: 0.1rem; }
+
+    .mine-loc-badge {
+      display: flex; align-items: center; gap: 0.35rem;
+      background: var(--app-blue); color: #fff;
+      border-radius: 8px; padding: 0.4rem 0.8rem;
+      font-size: 0.82rem; font-weight: 700;
+      white-space: nowrap; flex-shrink: 0; line-height: 1.2;
     }
+    .mine-card.today-card .mine-loc-badge { background: var(--app-accent); }
+
+    .mine-shifts { padding: 0 1rem; }
+
+    .mine-shift {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--app-border);
+    }
+    .mine-shift:last-child { border-bottom: none; }
+
+    .mine-time-block { flex: 1; min-width: 0; }
+    .mine-time { font-size: 1.1rem; font-weight: 800; color: var(--app-text-dark); }
+    .mine-duration { font-size: 0.75rem; color: var(--app-text-muted); margin-top: 0.1rem; }
+    .mine-note { font-size: 0.75rem; color: var(--app-text-muted); font-style: italic; margin-top: 0.1rem; }
 
     .now-badge {
       display: inline-flex; align-items: center; gap: 0.3rem;
-      background: #e8f5e9; color: #2E7D32;
-      border-radius: 4px; padding: 0.15rem 0.5rem;
+      background: var(--app-success-light); color: var(--app-success);
+      border-radius: 5px; padding: 0.15rem 0.55rem;
       font-size: 0.72rem; font-weight: 700; margin-top: 0.25rem;
     }
+    .now-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--app-success); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    .now-dot { width: 6px; height: 6px; border-radius: 50%; background: #2E7D32; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-
-    /* === AGENDA VIEW === */
-    .agenda-empty {
-      text-align: center; padding: 3rem 1rem;
-      color: var(--app-text-muted);
+    .mine-hours-pill {
+      background: var(--app-accent); color: #fff;
+      font-size: 0.85rem; font-weight: 700;
+      padding: 0.4rem 0.8rem; border-radius: 8px;
+      white-space: nowrap; flex-shrink: 0;
     }
 
-    .agenda-empty .big-icon { display: flex; justify-content: center; margin-bottom: 0.75rem; color: var(--app-border); }
-    .agenda-empty p { font-size: 0.9rem; }
-
-    .agenda-list { display: flex; flex-direction: column; gap: 1rem; }
-
-    .agenda-date-header {
-      display: flex; align-items: center; gap: 0.75rem;
-      margin-top: 0.5rem;
+    .leave-strip {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem; font-weight: 600;
+      border-top: 1px solid transparent;
     }
+    .leave-strip.approved { background: var(--app-approved-light); color: var(--app-approved); border-color: var(--app-approved-border); }
+    .leave-strip.pending  { background: var(--app-warning-light); color: var(--app-warning); border-color: var(--app-warning-border); }
 
-    .agenda-date-pill {
-      background: var(--app-accent);
-      color: #fff; border-radius: 8px;
-      padding: 0.35rem 0.85rem;
-      font-size: 0.82rem; font-weight: 700; white-space: nowrap;
-    }
-
-    .agenda-date-pill.today-pill { background: var(--app-accent); }
-    .agenda-date-pill.future-pill { background: var(--app-blue); }
-
-    .agenda-line { flex: 1; height: 1px; background: var(--app-border); }
-
-    .agenda-card {
-      background: #fff;
+    /* rooster */
+    .roster-card {
+      background: var(--app-bg-main);
       border: 1.5px solid var(--app-border);
-      border-radius: 12px; padding: 1rem;
-      box-shadow: var(--shadow-sm);
-      display: flex; gap: 1rem; align-items: center;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-
-    .agenda-card.today-agenda { border-color: var(--app-accent); }
-
-    .agenda-time-col { text-align: center; flex-shrink: 0; }
-    .agenda-time { font-size: 1rem; font-weight: 800; color: var(--app-text-dark); }
-    .agenda-time-end { font-size: 0.75rem; color: var(--app-text-muted); }
-
-    .agenda-divider { width: 1px; background: var(--app-border); align-self: stretch; flex-shrink: 0; }
-
-    .agenda-detail { flex: 1; min-width: 0; }
-    .agenda-loc { font-size: 0.82rem; color: var(--app-text-muted); margin-top: 0.15rem; }
-    .agenda-note { font-size: 0.75rem; color: var(--app-text-muted); font-style: italic; margin-top: 0.1rem; }
-
-    .agenda-hours { font-size: 0.9rem; font-weight: 800; color: var(--app-accent); flex-shrink: 0; }
-
-    .empty-week { text-align: center; padding: 2.5rem 1rem; color: var(--app-text-muted); font-size: 0.88rem; }
-
-    /* === TEAM VIEW === */
-    .team-day { margin-bottom: 0.6rem; }
-
-    .team-day-header {
-      display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.35rem 0; margin-bottom: 0.4rem;
-    }
-
-    .team-day-name {
-      font-size: 0.82rem; font-weight: 700;
-      color: var(--app-text-dark); white-space: nowrap;
-    }
-
-    .team-day-date { font-size: 0.75rem; color: var(--app-text-muted); }
-    .team-day-line { flex: 1; height: 1px; background: var(--app-border); }
-
-    .team-day-today .team-day-name { color: var(--app-accent); }
-
-    .team-card {
-      display: flex; align-items: center; gap: 0.75rem;
-      background: #fff;
-      border: 1px solid var(--app-border);
-      border-radius: 10px; padding: 0.7rem 1rem;
-      margin-bottom: 0.4rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .team-card.is-me {
+    .roster-card.today-card {
       border-color: var(--app-accent);
-      background: rgba(37,99,235,0.03);
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.14), 0 2px 8px rgba(0,0,0,0.08);
     }
+    .roster-card.closed-card { opacity: 0.55; }
 
-    .team-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem; font-weight: 700; color: #fff;
-      flex-shrink: 0;
+    .roster-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--app-card-header);
+      border-bottom: 1.5px solid var(--app-border);
     }
+    .roster-card.today-card .roster-header { background: rgba(37,99,235,0.08); }
 
-    .team-name { font-size: 0.88rem; font-weight: 600; color: var(--app-text-dark); }
-    .team-time { font-size: 0.75rem; color: var(--app-text-muted); margin-top: 0.05rem; }
+    .roster-day-name { font-size: 0.97rem; font-weight: 800; color: var(--app-text-dark); }
+    .roster-card.today-card .roster-day-name { color: var(--app-accent); }
+    .roster-day-date { font-size: 0.8rem; color: var(--app-text-muted); margin-left: 0.1rem; }
 
-    .team-me-badge {
+    .roster-today-chip {
       margin-left: auto;
       background: var(--app-accent); color: #fff;
-      font-size: 0.68rem; font-weight: 700;
-      padding: 0.18rem 0.55rem; border-radius: 20px;
-      white-space: nowrap; flex-shrink: 0;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 0.2rem 0.65rem; border-radius: 20px; flex-shrink: 0;
     }
-
-    .team-hours {
+    .roster-count {
       margin-left: auto;
-      font-size: 0.78rem; font-weight: 700;
-      color: var(--app-text-muted);
-      white-space: nowrap; flex-shrink: 0;
+      font-size: 0.75rem; color: var(--app-text-muted);
+      white-space: nowrap;
     }
 
-    .team-free-day {
-      text-align: center; padding: 0.6rem;
-      color: var(--app-text-muted); font-size: 0.78rem; font-style: italic;
+    .roster-list { display: flex; flex-direction: column; }
+
+    .roster-row {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--app-border);
+      transition: background 0.12s;
+    }
+    .roster-row:last-child { border-bottom: none; }
+    .roster-row.is-me {
+      background: rgba(37,99,235,0.06);
     }
 
+    .emp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .roster-name {
+      flex: 1; min-width: 0;
+      font-size: 0.88rem; font-weight: 600; color: var(--app-text-dark);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .roster-row.is-me .roster-name { color: var(--app-accent); }
+
+    .roster-time { font-size: 0.8rem; color: var(--app-text-muted); white-space: nowrap; }
+
+    .me-chip {
+      background: var(--app-accent); color: #fff;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 0.18rem 0.55rem; border-radius: 20px; flex-shrink: 0;
+    }
+
+    .roster-empty {
+      padding: 0.8rem 1rem;
+      font-size: 0.82rem; color: var(--app-text-muted); font-style: italic;
+    }
+
+    /* mobiel */
     @media (max-width: 600px) {
-      .hero { padding: 1rem 0.9rem 1.25rem; }
-      .content { padding: 0.75rem; }
-      .week-bar { top: 60px; padding: 0.45rem 0.75rem; }
-      .week-center { min-width: 120px; }
-      .shift-inner { flex-wrap: wrap; gap: 0.5rem; }
-      .shift-time-big { font-size: 0.95rem; }
+      .content { padding: 0.75rem; gap: 0.85rem; }
+      .dash-header { padding: 0.75rem 0.75rem 0; gap: 0.6rem; }
+      .main-tab { font-size: 0.85rem; padding: 0.6rem 0.4rem; }
+      .week-center { min-width: 130px; }
     }
   `;
 
   constructor() {
     super();
-    this._weekOffset = 0; this._shifts = []; this._teamShifts = [];
+    this._tab = 'mine';
+    this._weekOffset = 0;
+    this._shifts = [];
+    this._teamShifts = [];
+    this._locations = [];
+    this._activeLocationId = null;
     this._leaveRequests = [];
-    this._loading = true; this._error = '';
-    this._view = 'week';
+    this._loading = true;
+    this._error = '';
   }
 
   async connectedCallback() {
     super.connectedCallback();
-    await this._load();
+    try {
+      const [locations, leaveReqs] = await Promise.all([getLocations(), getMyLeaveRequests()]);
+      this._locations = locations;
+      this._leaveRequests = leaveReqs;
+      const myLocId = authStore.user?.locationId;
+      this._activeLocationId = (myLocId && locations.some(l => l.id === myLocId))
+        ? myLocId : locations[0]?.id;
+    } catch { /* niet erg, rooster laadt nog wel */ }
+    await this._loadMine();
   }
 
-  async _load() {
+  _weekRange() {
+    const mon = getMonday(this._weekOffset);
+    return { mon, sun: addDays(mon, 6) };
+  }
+
+  async _loadMine() {
     this._loading = true; this._error = '';
     try {
-      const mon = getMonday(this._weekOffset);
-      const sun = addDays(mon, 6);
-      const mine = await getMyShifts(toISO(mon), toISO(sun));
-      this._shifts = mine;
-      // Derive unique locations from own shifts this week
-      const locationIds = [...new Set(mine.map(s => s.locationId).filter(Boolean))];
-      const [teamResults, leaveReqs] = await Promise.all([
-        Promise.all(locationIds.map(lid => getTeamShifts(lid, toISO(mon), toISO(sun)))),
-        getMyLeaveRequests(),
-      ]);
-      this._teamShifts = teamResults.flat();
-      this._leaveRequests = leaveReqs;
+      const { mon, sun } = this._weekRange();
+      this._shifts = await getMyShifts(toISO(mon), toISO(sun));
     } catch { this._error = 'Kon rooster niet laden.'; }
     finally { this._loading = false; }
   }
 
-  _prevWeek() { this._weekOffset--; this._load(); }
-  _nextWeek() { this._weekOffset++; this._load(); }
-  _thisWeek() { this._weekOffset = 0; this._load(); }
+  async _loadRoster() {
+    if (!this._activeLocationId) return;
+    this._loading = true; this._error = '';
+    try {
+      const { mon, sun } = this._weekRange();
+      this._teamShifts = await getTeamShifts(this._activeLocationId, toISO(mon), toISO(sun));
+    } catch { this._error = 'Kon rooster niet laden.'; }
+    finally { this._loading = false; }
+  }
 
-  _totalHours() { return this._shifts.reduce((a, s) => a + diffHours(s.startTime, s.endTime), 0); }
+  async _setTab(tab) {
+    this._tab = tab;
+    if (tab === 'mine') await this._loadMine();
+    else await this._loadRoster();
+  }
+
+  async _setLocation(id) {
+    this._activeLocationId = id;
+    await this._loadRoster();
+  }
+
+  _prevWeek() { this._weekOffset--; this._tab === 'mine' ? this._loadMine() : this._loadRoster(); }
+  _nextWeek() { this._weekOffset++; this._tab === 'mine' ? this._loadMine() : this._loadRoster(); }
 
   _isNow(dateStr, st, et) {
     if (!isToday(dateStr)) return false;
@@ -380,231 +386,172 @@ class EmployeeDashboard extends LitElement {
     );
   }
 
-  _greeting() {
-    const h = new Date().getHours();
-    if (h < 12) return 'Goedemorgen';
-    if (h < 18) return 'Goedemiddag';
-    return 'Goedenavond';
-  }
+  _renderMine() {
+    const days = getWeekDays(this._weekOffset);
+    const working = days.filter(({ iso }) => this._shifts.some(s => s.date === iso));
 
-  _renderWeekView(days) {
-    return html`
-      <div class="day-list">
-        ${days.map(({ iso, dayShort, dayFull, date }) => {
-          const dayShifts = this._shifts.filter(s => s.date === iso);
-          const today = isToday(iso);
-          const past  = isPast(iso) && !today;
-          return html`
-            <div class="day-card ${today ? 'today-card' : ''}">
-              <div class="day-row">
-                <div class="day-indicator ${today ? 'today-ind' : past ? 'past-ind' : ''}">
-                  <div class="day-num">${date.getDate()}</div>
-                  <div class="day-short">${dayShort}</div>
-                </div>
-                <div class="day-info">
-                  <div class="day-full">${dayFull}</div>
-                  <div class="day-month">${MONTHS[date.getMonth()]}</div>
-                </div>
-                ${dayShifts.length === 0 ? html`<div class="free-badge">${HomeIcon(14)} Vrij</div>` : ''}
-              </div>
-              ${(() => {
-                const leave = this._leaveForDay(iso);
-                if (leave) {
-                  const cls = leave.status === 'APPROVED' ? 'approved' : 'pending';
-                  const label = leave.status === 'APPROVED' ? 'Verlof goedgekeurd' : 'Verlof aangevraagd (in behandeling)';
-                  return html`<div class="leave-banner ${cls}">${label}</div>`;
-                }
-                return '';
-              })()}
-              ${dayShifts.map(s => {
-                const hrs = diffHours(s.startTime, s.endTime);
-                const now = this._isNow(iso, s.startTime, s.endTime);
-                return html`
-                  <div class="shift-block">
-                    <div class="shift-inner">
-                      <div>
-                        <div class="shift-time-big">${s.startTime.slice(0,5)} - ${s.endTime.slice(0,5)}</div>
-                        ${now ? html`<div class="now-badge"><div class="now-dot"></div> Nu aan het werk</div>` : ''}
-                      </div>
-                      <div class="shift-meta">
-                        <div class="shift-loc">${MapPinIcon(12)} ${s.locationName}</div>
-                        ${s.note ? html`<div class="shift-note">${s.note}</div>` : ''}
-                      </div>
-                      <div class="hours-badge">${hrs.toFixed(1)}u</div>
-                    </div>
-                  </div>
-                `;
-              })}
-            </div>
-          `;
-        })}
+    if (working.length === 0) return html`
+      <div class="empty">
+        ${CalendarIcon(52)}
+        <div class="empty-title">Geen diensten deze week</div>
+        <div class="empty-sub">Je staat deze week niet ingepland.</div>
       </div>
     `;
-  }
 
-  _renderAgendaView() {
-    // Only show days with shifts, sorted by date
-    const shiftDays = [...this._shifts]
-      .sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime));
+    return working.map(({ iso, dayShort, dayFull, date }) => {
+      const dayShifts = this._shifts.filter(s => s.date === iso);
+      const today = isToday(iso);
+      const leave = this._leaveForDay(iso);
+      const locName = dayShifts[0]?.locationName ?? '';
 
-    if (shiftDays.length === 0) {
       return html`
-        <div class="agenda-empty">
-          <div class="big-icon">${CalendarIcon(48)}</div>
-          <p>Geen diensten gepland deze week.<br>Kijk een andere week of vraag je manager.</p>
+        <div class="mine-card ${today ? 'today-card' : ''}">
+          <div class="mine-header">
+            <div class="mine-date-box">
+              <div class="mine-date-num">${date.getDate()}</div>
+              <div class="mine-date-short">${dayShort}</div>
+            </div>
+            <div class="mine-day-info">
+              <div class="mine-day-name">${today ? 'Vandaag' : dayFull}</div>
+              <div class="mine-day-date">${date.getDate()} ${MONTHS[date.getMonth()]}</div>
+            </div>
+            ${locName ? html`
+              <div class="mine-loc-badge">${MapPinIcon(12)} ${locName}</div>
+            ` : ''}
+          </div>
+
+          ${leave ? html`
+            <div class="leave-strip ${leave.status === 'APPROVED' ? 'approved' : 'pending'}">
+              ${leave.status === 'APPROVED' ? 'Verlof goedgekeurd' : 'Verlof aangevraagd'}
+            </div>
+          ` : ''}
+
+          <div class="mine-shifts">
+            ${dayShifts.map(s => {
+              const hrs = diffHours(s.startTime, s.endTime);
+              const now = this._isNow(iso, s.startTime, s.endTime);
+              return html`
+                <div class="mine-shift">
+                  <div class="mine-time-block">
+                    <div class="mine-time">${s.startTime.slice(0,5)} - ${s.endTime.slice(0,5)}</div>
+                    ${now ? html`<div class="now-badge"><div class="now-dot"></div> Nu aan het werk</div>` : ''}
+                    ${s.note ? html`<div class="mine-note">${s.note}</div>` : ''}
+                  </div>
+                  <div class="mine-hours-pill">${hrs.toFixed(1)}u</div>
+                </div>
+              `;
+            })}
+          </div>
         </div>
       `;
-    }
-
-    // Group by date
-    const grouped = shiftDays.reduce((acc, s) => {
-      (acc[s.date] = acc[s.date] || []).push(s);
-      return acc;
-    }, {});
-
-    return html`
-      <div class="agenda-list">
-        ${Object.entries(grouped).map(([date, shifts]) => {
-          const d = new Date(date);
-          const today = isToday(date);
-          const dayName = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'][d.getDay()];
-          return html`
-            <div>
-              <div class="agenda-date-header">
-                <div class="agenda-date-pill ${today ? 'today-pill' : 'future-pill'}">
-                  ${today ? 'Vandaag' : dayName} ${d.getDate()} ${MONTHS[d.getMonth()]}
-                </div>
-                <div class="agenda-line"></div>
-              </div>
-              ${shifts.map(s => {
-                const hrs = diffHours(s.startTime, s.endTime);
-                const now = this._isNow(date, s.startTime, s.endTime);
-                return html`
-                  <div class="agenda-card ${today ? 'today-agenda' : ''}">
-                    <div class="agenda-time-col">
-                      <div class="agenda-time">${s.startTime.slice(0,5)}</div>
-                      <div class="agenda-time-end">t/m ${s.endTime.slice(0,5)}</div>
-                    </div>
-                    <div class="agenda-divider"></div>
-                    <div class="agenda-detail">
-                      <strong style="font-size:0.9rem">${s.locationName}</strong>
-                      ${now ? html`<div class="now-badge" style="margin-top:0.25rem"><div class="now-dot"></div> Nu actief</div>` : ''}
-                      ${s.note ? html`<div class="agenda-note">${s.note}</div>` : ''}
-                    </div>
-                    <div class="agenda-hours">${hrs.toFixed(1)}u</div>
-                  </div>
-                `;
-              })}
-            </div>
-          `;
-        })}
-      </div>
-    `;
+    });
   }
 
-  _initials(name) {
-    return (name || '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-  }
-
-  _renderTeamView(days) {
+  _renderRoster() {
     const myId = authStore.user?.id;
-    const DAYS = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+    const days = getWeekDays(this._weekOffset);
 
-    return html`
-      <div>
-        ${days.map(({ iso, date }) => {
-          const dayShifts = [...this._teamShifts.filter(s => s.date === iso)]
-            .sort((a, b) => a.startTime.localeCompare(b.startTime));
-          const today = isToday(iso);
-          const past  = isPast(iso) && !today;
-          return html`
-            <div class="team-day ${today ? 'team-day-today' : ''}">
-              <div class="team-day-header">
-                <span class="team-day-name">${DAYS[date.getDay()]}</span>
-                <span class="team-day-date">${date.getDate()} ${MONTHS[date.getMonth()]}</span>
-                <div class="team-day-line"></div>
-                ${today ? html`<span style="font-size:0.72rem;font-weight:700;color:var(--app-accent,#2563EB);white-space:nowrap">Vandaag</span>` : ''}
-              </div>
-              ${dayShifts.length === 0 ? html`
-                <div class="team-free-day">Niemand ingepland</div>
-              ` : dayShifts.map(s => {
+    return days.map(({ iso, date }) => {
+      const today = isToday(iso);
+      const isSunday = date.getDay() === 0;
+      const dayShifts = [...this._teamShifts.filter(s => s.date === iso)]
+        .sort((a, b) => {
+          if (a.employeeId === myId) return -1;
+          if (b.employeeId === myId) return 1;
+          return a.startTime.localeCompare(b.startTime);
+        });
+
+      return html`
+        <div class="roster-card ${today ? 'today-card' : ''} ${isSunday ? 'closed-card' : ''}">
+          <div class="roster-header">
+            <span class="roster-day-name">${DAYS_NL[date.getDay()]}</span>
+            <span class="roster-day-date">${date.getDate()} ${MONTHS[date.getMonth()]}</span>
+            ${today
+              ? html`<span class="roster-today-chip">Vandaag</span>`
+              : dayShifts.length > 0
+                ? html`<span class="roster-count">${dayShifts.length} medewerker${dayShifts.length !== 1 ? 's' : ''}</span>`
+                : ''}
+          </div>
+
+          <div class="roster-list">
+            ${isSunday ? html`<div class="roster-empty">Gesloten</div>` :
+              dayShifts.length === 0 ? html`<div class="roster-empty">Niemand ingepland</div>` :
+              dayShifts.map(s => {
                 const isMe = s.employeeId === myId;
                 const color = employeeColor(s.employeeId);
-                const hrs = diffHours(s.startTime, s.endTime);
                 return html`
-                  <div class="team-card ${isMe ? 'is-me' : ''}" style="opacity:${past ? 0.6 : 1}">
-                    <div class="team-avatar" style="background:${color}">${this._initials(s.employeeName)}</div>
-                    <div style="flex:1;min-width:0">
-                      <div class="team-name">${s.employeeName}</div>
-                      <div class="team-time">${s.startTime.slice(0,5)} - ${s.endTime.slice(0,5)}</div>
-                    </div>
-                    ${isMe
-                      ? html`<span class="team-me-badge">Jij</span>`
-                      : html`<span class="team-hours">${hrs.toFixed(1)}u</span>`}
+                  <div class="roster-row ${isMe ? 'is-me' : ''}">
+                    <div class="emp-dot" style="background:${color}"></div>
+                    <span class="roster-name">${s.employeeName}</span>
+                    <span class="roster-time">${s.startTime.slice(0,5)} - ${s.endTime.slice(0,5)}</span>
+                    ${isMe ? html`<span class="me-chip">Jij</span>` : ''}
                   </div>
                 `;
-              })}
-            </div>
-          `;
-        })}
-      </div>
-    `;
+              })
+            }
+          </div>
+        </div>
+      `;
+    });
   }
 
   render() {
-    const user = authStore.user;
-    const days = getWeekDays(this._weekOffset);
-    const totalHours = this._totalHours();
-    const workedDays = days.filter(d => this._shifts.some(s => s.date === d.iso)).length;
+    const isMine = this._tab === 'mine';
+    const totalHours = this._shifts.reduce((a, s) => a + diffHours(s.startTime, s.endTime), 0);
+    const mineDays  = [...new Set(this._shifts.map(s => s.date))].length;
 
     return html`
-      <div class="hero">
-        <div class="hero-top">
-          <div>
-            <div class="greeting">${this._greeting()}, ${user?.fullName?.split(' ')[0] || ''}!</div>
-            <div class="greeting-sub">Mijn rooster</div>
-          </div>
-          <div class="view-toggle">
-            <button class="view-btn ${this._view === 'week' ? 'active' : ''}" @click=${() => this._view = 'week'}>Week</button>
-            <button class="view-btn ${this._view === 'agenda' ? 'active' : ''}" @click=${() => this._view = 'agenda'}>Agenda</button>
-            <button class="view-btn ${this._view === 'team' ? 'active' : ''}" @click=${() => this._view = 'team'}>${UsersIcon(14)}</button>
+      <div class="dash-header">
+        <div class="header-tabs">
+          <button class="main-tab ${isMine ? 'active' : ''}"
+            @click=${() => this._setTab('mine')}>Mijn rooster</button>
+          <button class="main-tab ${!isMine ? 'active' : ''}"
+            @click=${() => this._setTab('roster')}>Rooster</button>
+        </div>
+
+        <div class="header-week">
+          <div class="week-nav">
+            <button class="nav-arrow" @click=${this._prevWeek}>${ChevronLeft(14)}</button>
+            <div class="week-center">
+              <div class="week-num">Week ${getWeekNumber(this._weekOffset)}</div>
+              <div class="week-range">${formatWeekShort(this._weekOffset)}</div>
+            </div>
+            <button class="nav-arrow" @click=${this._nextWeek}>${ChevronRight(14)}</button>
           </div>
         </div>
-        <div class="stats-row">
-          <div class="stat">
-            <div class="stat-val">${workedDays}</div>
-            <div class="stat-lbl">Werkdagen</div>
+
+        ${isMine ? html`
+          <div class="header-stats">
+            <div class="stat-item">
+              <div class="stat-val">${this._loading ? '-' : mineDays}</div>
+              <div class="stat-lbl">Diensten</div>
+            </div>
+            <div class="stat-div"></div>
+            <div class="stat-item">
+              <div class="stat-val">${this._loading ? '-' : totalHours.toFixed(1)}</div>
+              <div class="stat-lbl">Uren deze week</div>
+            </div>
           </div>
-          <div class="stat">
-            <div class="stat-val">${totalHours.toFixed(1)}</div>
-            <div class="stat-lbl">Uren</div>
+        ` : this._locations.length ? html`
+          <div class="header-locs">
+            ${this._locations.map(l => html`
+              <button class="loc-tab ${this._activeLocationId === l.id ? 'active' : ''}"
+                @click=${() => this._setLocation(l.id)}>${l.name}</button>
+            `)}
           </div>
-          <div class="stat">
-            <div class="stat-val">${this._shifts.length > 0 ? (totalHours / this._shifts.length).toFixed(1) : '-'}</div>
-            <div class="stat-lbl">Gem. per dienst</div>
-          </div>
-        </div>
+        ` : ''}
       </div>
 
-      <div class="week-bar">
-        <div class="week-nav">
-          <button class="nav-arrow" @click=${this._prevWeek}>${ChevronLeft(14)}</button>
-          <div class="week-center">
-            <div class="week-num">Week ${getWeekNumber(this._weekOffset)}</div>
-            <div class="week-range">${formatWeekShort(this._weekOffset)}</div>
-          </div>
-          <button class="nav-arrow" @click=${this._nextWeek}>${ChevronRight(14)}</button>
+      ${this._loading ? html`
+        <div class="skeleton">
+          ${[90, 130, 100, 90, 120].map(h => html`<div class="skel" style="height:${h}px"></div>`)}
         </div>
-      </div>
-
-      <div class="content">
-        ${this._error ? html`<div class="error-bar">${this._error}</div>` : ''}
-        ${this._loading ? html`<div class="empty-week">Laden...</div>` :
-          this._view === 'week'   ? this._renderWeekView(days)  :
-          this._view === 'agenda' ? this._renderAgendaView()    :
-          this._renderTeamView(days)
-        }
-      </div>
+      ` : html`
+        <div class="content">
+          ${this._error ? html`<div class="error-bar">${this._error}</div>` : ''}
+          ${isMine ? this._renderMine() : this._renderRoster()}
+        </div>
+      `}
     `;
   }
 }
