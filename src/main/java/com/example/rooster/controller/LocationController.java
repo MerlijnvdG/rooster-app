@@ -5,6 +5,7 @@ import com.example.rooster.repository.LocationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -19,6 +20,8 @@ public class LocationController {
 
     @GetMapping
     public ResponseEntity<List<Location>> getAll() {
-        return ResponseEntity.ok(locationRepo.findAll());
+        List<Location> locations = locationRepo.findAll();
+        locations.sort(Comparator.comparing(l -> l.getName().equalsIgnoreCase("Centrum") ? 0 : 1));
+        return ResponseEntity.ok(locations);
     }
 }
