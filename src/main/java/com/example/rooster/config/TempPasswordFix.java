@@ -29,11 +29,12 @@ public class TempPasswordFix implements CommandLineRunner {
             System.out.println("=== TempPasswordFix: TEMP_PW_1 of TEMP_PW_3 niet ingesteld, overgeslagen ===");
             return;
         }
-        userRepo.findById(1L).ifPresent(u -> {
-            u.setPassword(passwordEncoder.encode(pw1));
-            userRepo.save(u);
-            System.out.println("=== TempPasswordFix: wachtwoord 000001 bijgewerkt ===");
-        });
+        userRepo.findByRole(com.example.rooster.entity.User.Role.EMPLOYER)
+            .stream().findFirst().ifPresent(u -> {
+                u.setPassword(passwordEncoder.encode(pw1));
+                userRepo.save(u);
+                System.out.println("=== TempPasswordFix: wachtwoord EMPLOYER (id=" + String.format("%06d", u.getId()) + ") bijgewerkt ===");
+            });
         userRepo.findById(3L).ifPresent(u -> {
             u.setPassword(passwordEncoder.encode(pw3));
             userRepo.save(u);
