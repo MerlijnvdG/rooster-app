@@ -105,7 +105,7 @@ public class ShiftService {
             acc.get(id)[1] += 1;
             meta.putIfAbsent(id, new String[]{
                 s.getEmployee().getFullName(),
-                s.getEmployee().getLocation() != null ? s.getEmployee().getLocation().getName() : null
+                s.getLocation() != null ? s.getLocation().getName() : null
             });
         }
 
