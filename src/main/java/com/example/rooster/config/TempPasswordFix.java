@@ -35,10 +35,10 @@ public class TempPasswordFix implements CommandLineRunner {
                 userRepo.save(u);
                 System.out.println("=== TempPasswordFix: wachtwoord EMPLOYER (id=" + String.format("%06d", u.getId()) + ") bijgewerkt ===");
             });
-        userRepo.findById(3L).ifPresent(u -> {
+        userRepo.findById(4L).ifPresent(u -> {
             u.setPassword(passwordEncoder.encode(pw3));
             userRepo.save(u);
-            System.out.println("=== TempPasswordFix: wachtwoord 000003 bijgewerkt ===");
+            System.out.println("=== TempPasswordFix: wachtwoord 000004 bijgewerkt ===");
         });
     }
 }
