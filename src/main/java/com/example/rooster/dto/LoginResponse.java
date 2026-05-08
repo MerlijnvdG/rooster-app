@@ -4,7 +4,5 @@ public record LoginResponse(
     String token,
     String loginCode,
     String fullName,
-    String role,
-    Long locationId,
-    String locationName
+    String role
 ) {}

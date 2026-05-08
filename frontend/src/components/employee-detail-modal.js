@@ -204,7 +204,6 @@ class EmployeeDetailModal extends LitElement {
             <div class="head-name">${emp.name}</div>
             <div class="head-badges">
               <span class="head-badge">${emp.role === 'EMPLOYER' ? 'Manager' : 'Medewerker'}</span>
-              ${emp.locationName ? html`<span class="head-badge">${BuildingIcon(11)} ${emp.locationName}</span>` : ''}
               <span class="head-badge">Code: ${String(emp.id).padStart(6, '0')}</span>
             </div>
           </div>

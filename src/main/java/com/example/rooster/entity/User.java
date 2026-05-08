@@ -23,10 +23,6 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "location_id")
-    private Location location;
-
     public enum Role { EMPLOYER, EMPLOYEE }
 
     public User() {}
@@ -40,6 +36,4 @@ public class User {
     public void setFullName(String fullName) { this.fullName = fullName; }
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-    public Location getLocation() { return location; }
-    public void setLocation(Location location) { this.location = location; }
 }

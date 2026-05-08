@@ -326,9 +326,7 @@ class EmployeeDashboard extends LitElement {
       const [locations, leaveReqs] = await Promise.all([getLocations(), getMyLeaveRequests()]);
       this._locations = locations;
       this._leaveRequests = leaveReqs;
-      const myLocId = authStore.user?.locationId;
-      this._activeLocationId = (myLocId && locations.some(l => l.id === myLocId))
-        ? myLocId : locations[0]?.id;
+      this._activeLocationId = locations[0]?.id;
     } catch { /* niet erg, rooster laadt nog wel */ }
     await this._loadMine();
   }

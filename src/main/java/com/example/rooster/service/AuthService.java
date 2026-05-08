@@ -42,9 +42,7 @@ public class AuthService {
             token,
             String.format("%06d", user.getId()),
             user.getFullName(),
-            user.getRole().name(),
-            user.getLocation() != null ? user.getLocation().getId() : null,
-            user.getLocation() != null ? user.getLocation().getName() : null
+            user.getRole().name()
         );
     }
 }

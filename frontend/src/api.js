@@ -54,8 +54,6 @@ export const getAllUsers = () =>
 export const getAllEmployees = () =>
   fetch(`${BASE}/users/employees`, { headers: authHeaders() }).then(handleResponse);
 
-export const getEmployeesByLocation = (locationId) =>
-  fetch(`${BASE}/users/employees/location/${locationId}`, { headers: authHeaders() }).then(handleResponse);
 
 export const createUser = (data) =>
   fetch(`${BASE}/users`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(data) }).then(handleResponse);

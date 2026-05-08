@@ -1,10 +1,8 @@
 package com.example.rooster.service;
 
 import com.example.rooster.dto.*;
-import com.example.rooster.entity.Location;
 import com.example.rooster.entity.Shift;
 import com.example.rooster.entity.User;
-import com.example.rooster.repository.LocationRepository;
 import com.example.rooster.repository.ShiftRepository;
 import com.example.rooster.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,14 +17,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepo;
-    private final LocationRepository locationRepo;
     private final ShiftRepository shiftRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepo, LocationRepository locationRepo,
-                       ShiftRepository shiftRepo, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepo, ShiftRepository shiftRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
-        this.locationRepo = locationRepo;
         this.shiftRepo = shiftRepo;
         this.passwordEncoder = passwordEncoder;
     }
@@ -50,18 +45,11 @@ public class UserService {
             username = base + suffix++;
         }
 
-        Location location = null;
-        if (req.locationId() != null) {
-            location = locationRepo.findById(req.locationId())
-                .orElseThrow(() -> new IllegalArgumentException("Locatie niet gevonden."));
-        }
-
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(req.password()));
         user.setFullName(fullName);
         user.setRole(User.Role.valueOf(req.role()));
-        user.setLocation(location);
 
         return toResponse(userRepo.save(user));
     }
@@ -70,15 +58,8 @@ public class UserService {
         User user = userRepo.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Gebruiker niet gevonden."));
 
-        Location location = null;
-        if (req.locationId() != null) {
-            location = locationRepo.findById(req.locationId())
-                .orElseThrow(() -> new IllegalArgumentException("Locatie niet gevonden."));
-        }
-
         user.setFullName(req.fullName());
         user.setRole(User.Role.valueOf(req.role()));
-        user.setLocation(location);
         if (req.password() != null && !req.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(req.password()));
         }
@@ -129,9 +110,7 @@ public class UserService {
             u.getId(),
             String.format("%06d", u.getId()),
             u.getFullName(),
-            u.getRole().name(),
-            u.getLocation() != null ? u.getLocation().getId() : null,
-            u.getLocation() != null ? u.getLocation().getName() : null
+            u.getRole().name()
         );
     }
 }

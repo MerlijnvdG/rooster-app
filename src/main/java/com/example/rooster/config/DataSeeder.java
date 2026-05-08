@@ -40,20 +40,18 @@ public class DataSeeder implements CommandLineRunner {
         Location zuid = locationRepo.save(new Location("Zuid"));
         Location noord     = locationRepo.save(new Location("Noord"));
 
-        // Managers hebben een locatie (het filiaal dat ze beheren)
-        createUser("manager", "Sanne de Boer", User.Role.EMPLOYER, centrum);
-        createUser("admin",   "Admin",   User.Role.EMPLOYER, null);
+        createUser("manager", "Sanne de Boer", User.Role.EMPLOYER);
+        createUser("admin",   "Admin",   User.Role.EMPLOYER);
 
-        // Medewerkers zonder vaste locatie
-        User emp1 = createUser("thomas.bakker", "Thomas Bakker",  User.Role.EMPLOYEE, null);
-        User emp2 = createUser("lisa.jansen",   "Lisa Jansen",    User.Role.EMPLOYEE, null);
-        User emp3 = createUser("bas.de.vries",  "Bas de Vries",   User.Role.EMPLOYEE, null);
-        User emp4 = createUser("mike.visser",   "Mike Visser",    User.Role.EMPLOYEE, null);
-        User emp5 = createUser("anna.berg",     "Anna Berg",      User.Role.EMPLOYEE, null);
-        User emp6 = createUser("kevin.smit",    "Kevin Smit",     User.Role.EMPLOYEE, null);
-        User emp7 = createUser("sander.wolf",   "Sander Wolf",    User.Role.EMPLOYEE, null);
-        User emp8 = createUser("femke.klein",   "Femke Klein",    User.Role.EMPLOYEE, null);
-        User emp9 = createUser("roos.hendriks", "Roos Hendriks",  User.Role.EMPLOYEE, null);
+        User emp1 = createUser("thomas.bakker", "Thomas Bakker",  User.Role.EMPLOYEE);
+        User emp2 = createUser("lisa.jansen",   "Lisa Jansen",    User.Role.EMPLOYEE);
+        User emp3 = createUser("bas.de.vries",  "Bas de Vries",   User.Role.EMPLOYEE);
+        User emp4 = createUser("mike.visser",   "Mike Visser",    User.Role.EMPLOYEE);
+        User emp5 = createUser("anna.berg",     "Anna Berg",      User.Role.EMPLOYEE);
+        User emp6 = createUser("kevin.smit",    "Kevin Smit",     User.Role.EMPLOYEE);
+        User emp7 = createUser("sander.wolf",   "Sander Wolf",    User.Role.EMPLOYEE);
+        User emp8 = createUser("femke.klein",   "Femke Klein",    User.Role.EMPLOYEE);
+        User emp9 = createUser("roos.hendriks", "Roos Hendriks",  User.Role.EMPLOYEE);
 
         LocalDate monday = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
 
@@ -65,13 +63,12 @@ public class DataSeeder implements CommandLineRunner {
         seedWeek(monday.plusWeeks(1), emp7, emp8, emp9, noord);
     }
 
-    private User createUser(String username, String fullName, User.Role role, Location location) {
+    private User createUser(String username, String fullName, User.Role role) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode("Welkom@123"));
         user.setFullName(fullName);
         user.setRole(role);
-        user.setLocation(location);
         return userRepo.save(user);
     }
 

@@ -1,5 +1,5 @@
 ﻿import { LitElement, html, css } from 'lit';
-import { getAllUsers, createUser, updateUser, deleteUser, getLocations } from '../api.js';
+import { getAllUsers, createUser, updateUser, deleteUser } from '../api.js';
 import { employeeColor } from '../date-utils.js';
 import { SearchIcon, PlusIcon, UsersIcon, TagIcon, KeyIcon, EditIcon, TrashIcon, XIcon, EyeIcon } from '../icons.js';
 import './searchable-select.js';
@@ -9,8 +9,8 @@ import './confirm-modal.js';
 class UserModal extends LitElement {
   static properties = {
     open: { type: Boolean }, user: { type: Object },
-    locations: { type: Array }, _saving: { state: true }, _error: { state: true },
-    _role: { state: true }, _locationId: { state: true },
+    _saving: { state: true }, _error: { state: true },
+    _role: { state: true },
   };
 
   static styles = css`
@@ -40,15 +40,11 @@ class UserModal extends LitElement {
     .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
   `;
 
-  constructor() { super(); this.open = false; this.user = null; this.locations = []; this._saving = false; this._error = ''; this._role = 'EMPLOYEE'; this._locationId = ''; }
+  constructor() { super(); this.open = false; this.user = null; this._saving = false; this._error = ''; this._role = 'EMPLOYEE'; }
 
   updated(changed) {
     if (changed.has('user') || changed.has('open')) {
       this._role = this.user?.role || 'EMPLOYEE';
-      this._locationId = this.user?.locationId ? String(this.user.locationId) : (this.locations[0] ? String(this.locations[0].id) : '');
-    }
-    if (changed.has('locations') && !this._locationId && this.locations.length) {
-      this._locationId = String(this.locations[0].id);
     }
   }
 
@@ -62,7 +58,6 @@ class UserModal extends LitElement {
     const data = {
       fullName,
       role: this._role,
-      locationId: this._locationId ? Number(this._locationId) : null,
       password: f.elements['password'].value || undefined,
     };
     if (!this.user) data.username = fullName.toLowerCase().replace(/\s+/g, '.');
@@ -95,15 +90,6 @@ class UserModal extends LitElement {
                   @change=${e => this._role = e.detail.value}>
                 </searchable-select>
               </div>
-              ${this._role === 'EMPLOYER' ? html`
-              <div class="field">
-                <label>Filiaal</label>
-                <searchable-select
-                  .options=${[{value:'',label:'Geen vaste locatie'},...this.locations.map(l => ({value:String(l.id),label:l.name}))]}
-                  .value=${this._locationId}
-                  @change=${e => this._locationId = e.detail.value}>
-                </searchable-select>
-              </div>` : ''}
               <div class="field">
                 <label>${u ? 'Nieuw wachtwoord (leeg = niet wijzigen)' : 'Wachtwoord'}</label>
                 <input name="password" type="password" ?required=${!u} minlength="6" placeholder="${u ? 'Leeg laten om te behouden' : 'Minimaal 6 tekens'}">
@@ -263,7 +249,7 @@ class UsersPage extends LitElement {
 
   constructor() {
     super();
-    this._users = []; this._locations = [];
+    this._users = [];
     this._loading = true; this._error = '';
     this._modalOpen = false; this._editUser = null;
     this._search = ''; this._roleFilter = '';
@@ -279,7 +265,7 @@ class UsersPage extends LitElement {
   async _load() {
     this._loading = true;
     try {
-      [this._users, this._locations] = await Promise.all([getAllUsers(), getLocations()]);
+      this._users = await getAllUsers();
     } catch { this._error = 'Kon gebruikers niet laden.'; }
     finally { this._loading = false; }
   }
@@ -369,12 +355,11 @@ class UsersPage extends LitElement {
                       <span class="tag ${u.role === 'EMPLOYER' ? 'tag-role-employer' : 'tag-role-employee'}">
                         ${u.role === 'EMPLOYER' ? 'Manager' : 'Medewerker'}
                       </span>
-                      ${u.locationName ? html`<span class="tag tag-loc">${u.locationName}</span>` : ''}
                     </div>
                   </div>
                   <div class="user-actions">
                     <button class="icon-btn" title="Profiel bekijken"
-                      @click=${() => this._profileUser = { id: u.id, name: u.fullName, role: u.role, locationName: u.locationName }}>
+                      @click=${() => this._profileUser = { id: u.id, name: u.fullName, role: u.role }}>
                       ${EyeIcon(14)}
                     </button>
                     <button class="icon-btn" title="Bewerken" @click=${() => this._openEdit(u)}>${EditIcon(14)}</button>
@@ -390,7 +375,6 @@ class UsersPage extends LitElement {
       <user-modal
         .open=${this._modalOpen}
         .user=${this._editUser}
-        .locations=${this._locations}
         @close=${this._closeModal}
         @save=${this._handleSave}
       ></user-modal>

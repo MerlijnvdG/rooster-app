@@ -229,7 +229,6 @@ class ProfilePage extends LitElement {
       await updateUser(u.id || u.userId, {
         fullName: u.fullName,
         role: u.role,
-        locationId: u.locationId,
         password: pw,
       });
       this._success = 'Wachtwoord gewijzigd.';
