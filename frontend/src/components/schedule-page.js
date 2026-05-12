@@ -318,11 +318,6 @@ class SchedulePage extends LitElement {
     return html`
       <div class="toolbar">
         <div class="toolbar-nav">
-          ${this._locations.map(l => html`
-            <button class="tab ${this._activeLocationId === l.id ? 'active' : ''}"
-              @click=${() => this._setLocation(l.id)}>${l.name}</button>
-          `)}
-          <div class="tab-divider"></div>
           <div class="week-nav">
             <button class="nav-arrow" @click=${this._prevWeek}>${ChevronLeft(14)}</button>
             <div class="week-center">
@@ -331,6 +326,11 @@ class SchedulePage extends LitElement {
             </div>
             <button class="nav-arrow" @click=${this._nextWeek}>${ChevronRight(14)}</button>
           </div>
+          <div class="tab-divider"></div>
+          ${this._locations.map(l => html`
+            <button class="tab ${this._activeLocationId === l.id ? 'active' : ''}"
+              @click=${() => this._setLocation(l.id)}>${l.name}</button>
+          `)}
           <div class="nav-spacer"></div>
           <button class="add-btn" @click=${() => this._openAdd()}>${PlusIcon(15)} Dienst</button>
         </div>
