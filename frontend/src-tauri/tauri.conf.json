@@ -1,6 +1,6 @@
 {
   "productName": "Rooster",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "identifier": "com.rooster.app",
   "build": {
     "frontendDist": "../dist",
@@ -26,8 +26,10 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "",
-      "endpoints": []
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDIzRTAwODJFNDdBNDlEQzkKUldUSm5hUkhMZ2pnSTJtSTZaU1hTeDdveFdUVzh0MFdpWXQ5b09HTEVRSjBNczUrME5QemI5TEwK",
+      "endpoints": [
+        "https://github.com/MerlijnvdG/rooster-app/releases/latest/download/latest.json"
+      ]
     }
   },
   "app": {

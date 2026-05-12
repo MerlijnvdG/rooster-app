@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       proxy: {
         '/api': {
-          target: 'https://rooster-app.up.railway.app',
+          target: 'http://localhost:8080',
           changeOrigin: true,
         },
       },
