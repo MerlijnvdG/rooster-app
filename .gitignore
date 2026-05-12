@@ -31,3 +31,20 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Tauri / Frontend ###
+frontend/dist/
+frontend/src-tauri/target/
+frontend/src-tauri/gen/
+frontend/src-tauri/2
+
+### Android ###
+android/
+
+### Logs ###
+*.log
+backend.log
+backend-err.log
+
+### Static build output ###
+src/main/resources/static/assets/
