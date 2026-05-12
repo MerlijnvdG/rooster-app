@@ -77,24 +77,16 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        var source = new UrlBasedCorsConfigurationSource();
-
-        // API: alleen bekende origins toegestaan, JWT in Authorization header (geen cookies)
+        // alleen /api/**, met ook /** erbij gingen de preflights mis
         var apiConfig = new CorsConfiguration();
         var origins = Arrays.stream(allowedOriginsConfig.split(","))
             .map(String::trim).filter(s -> !s.isEmpty()).toList();
         apiConfig.setAllowedOriginPatterns(origins);
         apiConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         apiConfig.setAllowedHeaders(List.of("*"));
+
+        var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", apiConfig);
-
-        // Statische bestanden: alle origins toegestaan — JS/CSS zijn publiek en bevatten geen data
-        // Nodig omdat Vite crossorigin-attribuut toevoegt aan script/link tags
-        var staticConfig = new CorsConfiguration();
-        staticConfig.setAllowedOriginPatterns(List.of("*"));
-        staticConfig.setAllowedMethods(List.of("GET", "OPTIONS"));
-        source.registerCorsConfiguration("/**", staticConfig);
-
         return source;
     }
 }
