@@ -1,7 +1,6 @@
 package com.example.rooster.config;
 
 import com.example.rooster.security.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,8 +18,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -29,9 +26,6 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
-
-    @Value("${app.cors.extra-origins:}")
-    private String extraOrigins;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -77,21 +71,8 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        var origins = new ArrayList<>(Arrays.asList(
-            "http://localhost:*",
-            "https://localhost:*",
-            "tauri://localhost",       // Tauri desktop (Linux/macOS)
-            "https://tauri.localhost"  // Tauri desktop (Windows)
-        ));
-        if (extraOrigins != null && !extraOrigins.isBlank()) {
-            Arrays.stream(extraOrigins.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .forEach(origins::add);
-        }
-
         var config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(origins);
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
