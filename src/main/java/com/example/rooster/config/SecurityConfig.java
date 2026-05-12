@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,7 +31,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     // te overschrijven met CORS_ALLOWED_ORIGINS
-    @Value("${app.cors.allowed-origins:https://rooster-app.up.railway.app,http://localhost:*,https://localhost:*,tauri://localhost,https://tauri.localhost}")
+    @Value("${app.cors.allowed-origins:https://rooster-app.up.railway.app,http://localhost:*,https://localhost:*,tauri://localhost,https://tauri.localhost,http://tauri.localhost}")
     private String allowedOriginsConfig;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
@@ -63,6 +64,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/users/**").hasRole("EMPLOYER")
