@@ -52,6 +52,9 @@ jobs:
           updaterJsonPreferNsis: true
 
       - name: Deploy to Railway
-        run: npx --yes @railway/cli@latest redeploy --service f9d55309-3e5f-48d4-9870-1d9f7c937e2e --yes
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          curl -s -X POST https://backboard.railway.app/graphql/v2 \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"mutation { serviceInstanceRedeploy(serviceId: \"f9d55309-3e5f-48d4-9870-1d9f7c937e2e\") }"}'
+        shell: bash
