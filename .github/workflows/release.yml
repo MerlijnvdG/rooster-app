@@ -51,6 +51,34 @@ jobs:
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
 
+      - name: Upload updater artifacts and latest.json
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG#v}
+          BUNDLE_DIR="frontend/src-tauri/target/release/bundle"
+          NSIS_ZIP=$(find "$BUNDLE_DIR/nsis" -name "*.nsis.zip" | head -1)
+          NSIS_SIG=$(find "$BUNDLE_DIR/nsis" -name "*.nsis.zip.sig" | head -1)
+          gh release upload "$TAG" "$NSIS_ZIP" "$NSIS_SIG" --clobber
+          SIG_CONTENT=$(cat "$NSIS_SIG")
+          FILENAME=$(basename "$NSIS_ZIP")
+          cat > latest.json <<EOF
+          {
+            "version": "$VERSION",
+            "notes": "",
+            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "platforms": {
+              "windows-x86_64": {
+                "signature": "$SIG_CONTENT",
+                "url": "https://github.com/MerlijnvdG/rooster-app/releases/download/$TAG/$FILENAME"
+              }
+            }
+          }
+          EOF
+          gh release upload "$TAG" latest.json --clobber
+
       - name: Deploy to Railway
         run: |
           curl -s -X POST https://backboard.railway.app/graphql/v2 \
