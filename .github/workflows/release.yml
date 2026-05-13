@@ -52,34 +52,33 @@ jobs:
           updaterJsonPreferNsis: true
 
       - name: Upload updater artifacts and latest.json
-        shell: bash
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG=${{ github.ref_name }}
-          VERSION=${TAG#v}
-          BUNDLE_DIR="frontend/src-tauri/target/release/bundle"
-          NSIS_ZIP=$(find "$BUNDLE_DIR/nsis" -name "*.nsis.zip" | head -1)
-          NSIS_SIG="${NSIS_ZIP}.sig"
-          gh release upload "$TAG" "$NSIS_ZIP" "$NSIS_SIG" --clobber
-          SIG_CONTENT=$(cat "$NSIS_SIG")
-          FILENAME=$(basename "$NSIS_ZIP")
-          PUB_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          node -e "
-            const json = {
-              version: '$VERSION',
-              notes: '',
-              pub_date: '$PUB_DATE',
-              platforms: {
-                'windows-x86_64': {
-                  signature: $(node -e \"process.stdout.write(JSON.stringify(require('fs').readFileSync('$NSIS_SIG','utf8')))\"),
-                  url: 'https://github.com/MerlijnvdG/rooster-app/releases/download/$TAG/$FILENAME'
-                }
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          $nsisDir = "frontend/src-tauri/target/release/bundle/nsis"
+          $nsisZip = (Get-ChildItem "$nsisDir" -Filter "*.nsis.zip" | Select-Object -First 1).FullName
+          $nsisSig = "$nsisZip.sig"
+          gh release upload $tag $nsisZip $nsisSig --clobber
+          $sigContent = Get-Content $nsisSig -Raw
+          $filename = [System.IO.Path]::GetFileName($nsisZip)
+          $pubDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+          $url = "https://github.com/MerlijnvdG/rooster-app/releases/download/$tag/$filename"
+          $json = @{
+            version = $version
+            notes = ""
+            pub_date = $pubDate
+            platforms = @{
+              "windows-x86_64" = @{
+                signature = $sigContent.Trim()
+                url = $url
               }
-            };
-            require('fs').writeFileSync('latest.json', JSON.stringify(json, null, 2));
-          "
-          gh release upload "$TAG" latest.json --clobber
+            }
+          } | ConvertTo-Json -Depth 5
+          $json | Out-File -FilePath latest.json -Encoding utf8
+          gh release upload $tag latest.json --clobber
 
       - name: Deploy to Railway
         run: |
