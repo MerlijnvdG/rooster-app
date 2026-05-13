@@ -60,23 +60,25 @@ jobs:
           VERSION=${TAG#v}
           BUNDLE_DIR="frontend/src-tauri/target/release/bundle"
           NSIS_ZIP=$(find "$BUNDLE_DIR/nsis" -name "*.nsis.zip" | head -1)
-          NSIS_SIG=$(find "$BUNDLE_DIR/nsis" -name "*.nsis.zip.sig" | head -1)
+          NSIS_SIG="${NSIS_ZIP}.sig"
           gh release upload "$TAG" "$NSIS_ZIP" "$NSIS_SIG" --clobber
           SIG_CONTENT=$(cat "$NSIS_SIG")
           FILENAME=$(basename "$NSIS_ZIP")
-          cat > latest.json <<EOF
-          {
-            "version": "$VERSION",
-            "notes": "",
-            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "platforms": {
-              "windows-x86_64": {
-                "signature": "$SIG_CONTENT",
-                "url": "https://github.com/MerlijnvdG/rooster-app/releases/download/$TAG/$FILENAME"
+          PUB_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          node -e "
+            const json = {
+              version: '$VERSION',
+              notes: '',
+              pub_date: '$PUB_DATE',
+              platforms: {
+                'windows-x86_64': {
+                  signature: $(node -e \"process.stdout.write(JSON.stringify(require('fs').readFileSync('$NSIS_SIG','utf8')))\"),
+                  url: 'https://github.com/MerlijnvdG/rooster-app/releases/download/$TAG/$FILENAME'
+                }
               }
-            }
-          }
-          EOF
+            };
+            require('fs').writeFileSync('latest.json', JSON.stringify(json, null, 2));
+          "
           gh release upload "$TAG" latest.json --clobber
 
       - name: Deploy to Railway
