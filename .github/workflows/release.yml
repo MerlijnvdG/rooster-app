@@ -58,18 +58,16 @@ jobs:
         run: |
           $tag = "${{ github.ref_name }}"
           $version = $tag.TrimStart('v')
-          $nsisDir = "frontend\src-tauri\target\release\bundle\nsis"
-          $nsisZip = (Get-ChildItem -Path $nsisDir | Where-Object { $_.Name -match '\.nsis\.zip$' } | Select-Object -First 1).FullName
-          if (-not $nsisZip) { throw "NSIS zip not found in $nsisDir" }
-          $nsisSig = $nsisZip + ".sig"
-          Write-Host "NSIS ZIP: $nsisZip"
-          Write-Host "NSIS SIG: $nsisSig"
-          gh release upload $tag "$nsisZip" "$nsisSig" --clobber
-          $sigContent = Get-Content -Path $nsisSig -Raw
-          $filename = [System.IO.Path]::GetFileName($nsisZip)
-          $urlFilename = $filename.Replace(' ', '.')
+          $nsisBase = "frontend\src-tauri\target\release\bundle\nsis"
+          $nsisZipPath = "$nsisBase\Rooster_${version}_x64-setup.nsis.zip"
+          $nsisSigPath = "$nsisZipPath.sig"
+          if (-not (Test-Path $nsisZipPath)) { throw "Not found: $nsisZipPath" }
+          if (-not (Test-Path $nsisSigPath)) { throw "Not found: $nsisSigPath" }
+          $sigContent = Get-Content -LiteralPath $nsisSigPath -Raw
+          $urlFilename = "Rooster_${version}_x64-setup.nsis.zip"
           $pubDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
           $url = "https://github.com/MerlijnvdG/rooster-app/releases/download/$tag/$urlFilename"
+          gh release upload $tag $nsisZipPath $nsisSigPath --clobber
           $json = @{
             version = $version
             notes = ""
