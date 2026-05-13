@@ -58,9 +58,11 @@ jobs:
         run: |
           $tag = "${{ github.ref_name }}"
           $version = $tag.TrimStart('v')
-          $nsisDir = "frontend/src-tauri/target/release/bundle/nsis"
-          $nsisZip = (Get-ChildItem "$nsisDir" -Filter "*.nsis.zip" | Select-Object -First 1).FullName
-          $nsisSig = "$nsisZip.sig"
+          $nsisDir = "frontend\src-tauri\target\release\bundle\nsis"
+          $nsisZip = (Get-ChildItem -Path $nsisDir -Filter "*.nsis.zip" | Select-Object -First 1).FullName
+          $nsisSig = $nsisZip + ".sig"
+          Write-Host "NSIS ZIP: $nsisZip"
+          Write-Host "NSIS SIG: $nsisSig"
           gh release upload $tag $nsisZip $nsisSig --clobber
           $sigContent = Get-Content $nsisSig -Raw
           $filename = [System.IO.Path]::GetFileName($nsisZip)
