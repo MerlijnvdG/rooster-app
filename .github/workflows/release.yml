@@ -49,6 +49,7 @@ jobs:
           releaseDraft: false
           prerelease: false
           includeUpdaterJson: true
+          updaterJsonPreferNsis: true
 
       - name: Deploy to Railway
         run: npx --yes @railway/cli@latest redeploy --service f9d55309-3e5f-48d4-9870-1d9f7c937e2e --yes
