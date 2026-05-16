@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $tag = "${{ github.ref_name }}"
-          $version = $tag.TrimStart('v')
+          $version = (Get-Content "frontend\src-tauri\tauri.conf.json" | ConvertFrom-Json).version
           $nsisBase = "frontend\src-tauri\target\release\bundle\nsis"
           $nsisZipPath = "$nsisBase\Rooster_${version}_x64-setup.nsis.zip"
           $nsisSigPath = "$nsisZipPath.sig"
