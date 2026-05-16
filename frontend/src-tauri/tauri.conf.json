@@ -26,7 +26,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDIzRTAwODJFNDdBNDlEQzkKUldUSm5hUkhMZ2pnSTJtSTZaU1hTeDdveFdUVzh0MFdpWXQ5b09HTEVRSjBNczUrME5QemI5TEwK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNCODUyRDZDMTFCNDYxMzQKUldRMFliUVJiQzJGTzJMWnQ2SXB6VitEV1M2TDVLL0luSzhjZGRXNjFRcUw5c0JvTzF5RlJ1YVQK",
       "endpoints": [
         "https://github.com/MerlijnvdG/rooster-app/releases/latest/download/latest.json"
       ]
