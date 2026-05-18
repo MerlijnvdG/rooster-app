@@ -4,6 +4,13 @@ import './components/login-page.js';
 import './components/employer-shell.js';
 import './components/employee-shell.js';
 
+async function showWindow() {
+  try {
+    const { getCurrentWindow } = await import('@tauri-apps/api/window');
+    await getCurrentWindow().show();
+  } catch (e) {}
+}
+
 async function checkForUpdates() {
   try {
     const { check } = await import('@tauri-apps/plugin-updater');
@@ -37,3 +44,5 @@ class RoosterApp extends LitElement {
 }
 
 customElements.define('rooster-app', RoosterApp);
+
+document.addEventListener('DOMContentLoaded', showWindow);
