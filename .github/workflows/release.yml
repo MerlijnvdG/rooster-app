@@ -51,37 +51,6 @@ jobs:
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
 
-      - name: Upload updater artifacts and latest.json
-        shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $tag = "${{ github.ref_name }}"
-          $version = (Get-Content "frontend\src-tauri\tauri.conf.json" | ConvertFrom-Json).version
-          $nsisBase = "frontend\src-tauri\target\release\bundle\nsis"
-          $nsisZipPath = "$nsisBase\Rooster_${version}_x64-setup.nsis.zip"
-          $nsisSigPath = "$nsisZipPath.sig"
-          if (-not (Test-Path $nsisZipPath)) { throw "Not found: $nsisZipPath" }
-          if (-not (Test-Path $nsisSigPath)) { throw "Not found: $nsisSigPath" }
-          $sigContent = Get-Content -LiteralPath $nsisSigPath -Raw
-          $urlFilename = "Rooster_${version}_x64-setup.nsis.zip"
-          $pubDate = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-          $url = "https://github.com/MerlijnvdG/rooster-app/releases/download/$tag/$urlFilename"
-          gh release upload $tag $nsisZipPath $nsisSigPath --clobber
-          $json = @{
-            version = $version
-            notes = ""
-            pub_date = $pubDate
-            platforms = @{
-              "windows-x86_64" = @{
-                signature = $sigContent.Trim()
-                url = $url
-              }
-            }
-          } | ConvertTo-Json -Depth 5
-          $json | Out-File -FilePath latest.json -Encoding utf8
-          gh release upload $tag latest.json --clobber
-
       - name: Deploy to Railway
         run: |
           curl -s -X POST https://backboard.railway.app/graphql/v2 \
