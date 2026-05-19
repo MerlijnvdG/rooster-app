@@ -45,4 +45,12 @@ class RoosterApp extends LitElement {
 
 customElements.define('rooster-app', RoosterApp);
 
-document.addEventListener('DOMContentLoaded', showWindow);
+document.addEventListener('DOMContentLoaded', () => {
+  showWindow();
+  const splash = document.getElementById('splash');
+  if (splash) {
+    splash.style.transition = 'opacity 0.2s';
+    splash.style.opacity = '0';
+    setTimeout(() => splash.remove(), 200);
+  }
+});
