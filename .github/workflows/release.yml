@@ -30,6 +30,7 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './frontend/src-tauri -> target'
+          shared-key: 'tauri-windows'
 
       - name: Install frontend dependencies
         working-directory: frontend
