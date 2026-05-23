@@ -92,7 +92,7 @@ class ShiftModal extends LitElement {
       background: var(--app-bg-main);
     }
 
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 0.9rem; }
     .row .field { margin-bottom: 0; }
 
     .error {

@@ -1,6 +1,6 @@
 {
   "productName": "Rooster",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "identifier": "com.rooster.app",
   "build": {
     "frontendDist": "../dist",
