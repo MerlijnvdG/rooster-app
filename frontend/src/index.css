@@ -1,50 +1,60 @@
 :root {
-  --app-accent: #2563EB;
-  --app-accent-hover: #1D4ED8;
-  --app-accent-light: rgba(37, 99, 235, 0.08);
-  --app-blue: #0F2537;
-  --app-blue-light: #1D3A54;
-  --app-blue-faint: #e8edf2;
-  --app-bg-main: #FAF7F2;
-  --app-bg-light: #EEE9E1;
-  --app-border: #D6D2CA;
-  --app-text-dark: #1A1A1A;
-  --app-text-muted: #626B74;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-head: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --app-accent: #1F5F5B;
+  --app-accent-hover: #174A47;
+  --app-accent-light: rgba(31,95,91,0.09);
+  --app-sidebar: #F3F3F0;
+  --app-primary: #20242A;
+  --app-primary-light: #3A4048;
+  --app-primary-faint: #E6ECE9;
+  --app-bg-main: #FFFFFF;
+  --app-bg-light: #F9F9F7;
+  --app-border: #E1E3DE;
+  --app-text-dark: #20242A;
+  --app-text-muted: #5F6670;
   --app-text-light: #FFFFFF;
-  --app-card-header: #E2E6EA;
+  --app-card-header: #F6F7F4;
+
+  /* markeerstift: vandaag en je eigen diensten */
+  --app-marker: #FCE68A;
+  --app-marker-ink: #4A3B00;
+  --app-today: #FDF7DC;
 
   /* status kleuren */
-  --app-success: #2E7D32;
-  --app-success-light: #e8f5e9;
-  --app-approved: #065F46;
-  --app-approved-light: #D1FAE5;
-  --app-approved-border: #A7F3D0;
-  --app-warning: #92400E;
-  --app-warning-light: #FEF3C7;
-  --app-warning-border: #FDE68A;
-  --app-discount: #C62828;
-  --app-discount-light: #ffebee;
+  --app-success: #2F6B3A;
+  --app-success-light: #E3EFE3;
+  --app-approved: #2F6B3A;
+  --app-approved-light: #E3EFE3;
+  --app-approved-border: #B9D3BB;
+  --app-warning: #8A5A00;
+  --app-warning-light: #FBF0D3;
+  --app-warning-border: #EDD9A3;
+  --app-discount: #B3261E;
+  --app-discount-light: #F8E3E1;
 
   /* knoppen en inputs */
-  --app-icon-btn-bg: rgba(0,0,0,0.07);
-  --app-icon-btn-hover: rgba(0,0,0,0.13);
-  --app-notif-unread: rgba(37,99,235,0.035);
+  --app-icon-btn-bg: transparent;
+  --app-icon-btn-hover: rgba(32,36,42,0.06);
+  --app-notif-unread: rgba(252,230,138,0.35);
 
-  /* schaduwen */
-  --app-shadow-header: 0 1px 4px rgba(0,0,0,0.08);
-  --app-shadow-card: 0 1px 4px rgba(0,0,0,0.06);
-  --app-shadow-modal: 0 8px 32px rgba(0,0,0,0.18);
-  --app-shadow-dropdown: 0 4px 16px rgba(0,0,0,0.12);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.09);
-  --shadow-lg: 0 12px 32px rgba(0,0,0,0.13);
+  /* schaduwen, alleen voor dingen die zweven */
+  --app-shadow-header: none;
+  --app-shadow-card: none;
+  --app-shadow-modal: 0 10px 30px rgba(20,24,28,0.18);
+  --app-shadow-dropdown: 0 6px 20px rgba(20,24,28,0.14);
+  --shadow-sm: none;
+  --shadow-md: 0 4px 12px rgba(20,24,28,0.08);
+  --shadow-lg: 0 10px 30px rgba(20,24,28,0.18);
 
-  --transition: 0.18s ease;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --transition: 0.12s ease;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
   color: var(--app-text-dark);
@@ -54,105 +64,79 @@
 /* donker via os */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --app-bg-main: #1C1C1E;
-    --app-bg-light: #2C2C2E;
-    --app-border: #48484A;
-    --app-text-dark: #F2F2F7;
-    --app-text-muted: #8E8E93;
-    --app-blue-faint: #1A2535;
-    --app-card-header: #28282A;
+    --app-accent: #6FB8AE;
+    --app-accent-hover: #8BCBC2;
+    --app-accent-light: rgba(111,184,174,0.12);
+    --app-sidebar: #191C1F;
+    --app-primary: #E6E8EA;
+    --app-bg-main: #1D2125;
+    --app-bg-light: #15181B;
+    --app-border: #2F353B;
+    --app-text-dark: #E6E8EA;
+    --app-text-muted: #9AA1A9;
+    --app-primary-faint: #1F2A28;
+    --app-card-header: #22272B;
+    --app-marker: #E9D27A;
+    --app-marker-ink: #2A2200;
+    --app-today: #23241F;
 
-    --app-success: #66BB6A;
-    --app-success-light: rgba(76,175,80,0.15);
-    --app-approved: #34D399;
-    --app-approved-light: rgba(52,211,153,0.13);
-    --app-approved-border: rgba(52,211,153,0.3);
-    --app-warning: #FBBF24;
-    --app-warning-light: rgba(251,191,36,0.13);
-    --app-warning-border: rgba(251,191,36,0.3);
-    --app-discount: #EF5350;
-    --app-discount-light: rgba(239,83,80,0.13);
+    --app-success: #7CC489;
+    --app-success-light: rgba(124,196,137,0.12);
+    --app-approved: #7CC489;
+    --app-approved-light: rgba(124,196,137,0.12);
+    --app-approved-border: rgba(124,196,137,0.3);
+    --app-warning: #E9C46A;
+    --app-warning-light: rgba(233,196,106,0.12);
+    --app-warning-border: rgba(233,196,106,0.3);
+    --app-discount: #F08A80;
+    --app-discount-light: rgba(240,138,128,0.12);
 
-    --app-icon-btn-bg: rgba(255,255,255,0.10);
-    --app-icon-btn-hover: rgba(255,255,255,0.18);
-    --app-notif-unread: rgba(37,99,235,0.12);
+    --app-icon-btn-hover: rgba(255,255,255,0.07);
+    --app-notif-unread: rgba(233,210,122,0.08);
 
-    --app-shadow-header: 0 1px 0 rgba(255,255,255,0.06);
-    --app-shadow-card: 0 1px 4px rgba(0,0,0,0.4);
-    --app-shadow-modal: 0 8px 32px rgba(0,0,0,0.6);
-    --app-shadow-dropdown: 0 4px 16px rgba(0,0,0,0.5);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
+    --app-shadow-modal: 0 10px 30px rgba(0,0,0,0.5);
+    --app-shadow-dropdown: 0 6px 20px rgba(0,0,0,0.45);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
   }
 }
 
 /* zelf donker gekozen */
 [data-theme="dark"] {
-  --app-bg-main: #1C1C1E;
-  --app-bg-light: #2C2C2E;
-  --app-border: #48484A;
-  --app-text-dark: #F2F2F7;
-  --app-text-muted: #8E8E93;
-  --app-blue-faint: #1A2535;
-  --app-card-header: #28282A;
+  --app-accent: #6FB8AE;
+  --app-accent-hover: #8BCBC2;
+  --app-accent-light: rgba(111,184,174,0.12);
+  --app-sidebar: #191C1F;
+  --app-primary: #E6E8EA;
+  --app-bg-main: #1D2125;
+  --app-bg-light: #15181B;
+  --app-border: #2F353B;
+  --app-text-dark: #E6E8EA;
+  --app-text-muted: #9AA1A9;
+  --app-primary-faint: #1F2A28;
+  --app-card-header: #22272B;
+  --app-marker: #E9D27A;
+  --app-marker-ink: #2A2200;
+  --app-today: #23241F;
 
-  --app-success: #66BB6A;
-  --app-success-light: rgba(76,175,80,0.15);
-  --app-approved: #34D399;
-  --app-approved-light: rgba(52,211,153,0.13);
-  --app-approved-border: rgba(52,211,153,0.3);
-  --app-warning: #FBBF24;
-  --app-warning-light: rgba(251,191,36,0.13);
-  --app-warning-border: rgba(251,191,36,0.3);
-  --app-discount: #EF5350;
-  --app-discount-light: rgba(239,83,80,0.13);
+  --app-success: #7CC489;
+  --app-success-light: rgba(124,196,137,0.12);
+  --app-approved: #7CC489;
+  --app-approved-light: rgba(124,196,137,0.12);
+  --app-approved-border: rgba(124,196,137,0.3);
+  --app-warning: #E9C46A;
+  --app-warning-light: rgba(233,196,106,0.12);
+  --app-warning-border: rgba(233,196,106,0.3);
+  --app-discount: #F08A80;
+  --app-discount-light: rgba(240,138,128,0.12);
 
-  --app-icon-btn-bg: rgba(255,255,255,0.10);
-  --app-icon-btn-hover: rgba(255,255,255,0.18);
-  --app-notif-unread: rgba(37,99,235,0.12);
+  --app-icon-btn-hover: rgba(255,255,255,0.07);
+  --app-notif-unread: rgba(233,210,122,0.08);
 
-  --app-shadow-header: 0 1px 0 rgba(255,255,255,0.06);
-  --app-shadow-card: 0 1px 4px rgba(0,0,0,0.4);
-  --app-shadow-modal: 0 8px 32px rgba(0,0,0,0.6);
-  --app-shadow-dropdown: 0 4px 16px rgba(0,0,0,0.5);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
-}
-
-/* zelf licht gekozen */
-[data-theme="light"] {
-  --app-bg-main: #FAF7F2;
-  --app-bg-light: #EEE9E1;
-  --app-border: #D6D2CA;
-  --app-text-dark: #1A1A1A;
-  --app-text-muted: #626B74;
-  --app-blue-faint: #e8edf2;
-  --app-card-header: #E2E6EA;
-
-  --app-success: #2E7D32;
-  --app-success-light: #e8f5e9;
-  --app-approved: #065F46;
-  --app-approved-light: #D1FAE5;
-  --app-approved-border: #A7F3D0;
-  --app-warning: #92400E;
-  --app-warning-light: #FEF3C7;
-  --app-warning-border: #FDE68A;
-  --app-discount: #C62828;
-  --app-discount-light: #ffebee;
-
-  --app-icon-btn-bg: rgba(0,0,0,0.07);
-  --app-icon-btn-hover: rgba(0,0,0,0.13);
-  --app-notif-unread: rgba(37,99,235,0.035);
-
-  --app-shadow-header: 0 1px 4px rgba(0,0,0,0.08);
-  --app-shadow-card: 0 1px 4px rgba(0,0,0,0.06);
-  --app-shadow-modal: 0 8px 32px rgba(0,0,0,0.18);
-  --app-shadow-dropdown: 0 4px 16px rgba(0,0,0,0.12);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.09);
-  --shadow-lg: 0 12px 32px rgba(0,0,0,0.13);
+  --app-shadow-modal: 0 10px 30px rgba(0,0,0,0.5);
+  --app-shadow-dropdown: 0 6px 20px rgba(0,0,0,0.45);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 *, *::before, *::after {
@@ -175,7 +159,16 @@ input, select, textarea, button {
   font-family: inherit;
 }
 
+:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }

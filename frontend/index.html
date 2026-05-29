@@ -5,12 +5,15 @@
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#2563EB" />
+    <meta name="theme-color" content="#1F5F5B" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Rooster" />
     <title>Rooster</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="/src/rooster-app.js"></script>
     <script>
@@ -20,19 +23,8 @@
     </script>
   </head>
   <body>
-    <div id="splash" style="
-      position: fixed; inset: 0;
-      background: #1a1a1a;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 1.25rem; z-index: 9999;
-    ">
-      <svg width="48" height="48" viewBox="0 0 48 48" style="animation: spin 0.9s linear infinite;">
-        <circle cx="24" cy="24" r="20" fill="none" stroke="#333" stroke-width="4"/>
-        <path d="M24 4 a20 20 0 0 1 20 20" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-      <span style="color: #2563EB; font-family: system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.3px;">Rooster laden</span>
-      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    <div id="splash" style="position: fixed; inset: 0; z-index: 9999; background: #EEF0EC; display: flex; align-items: center; justify-content: center;">
+      <img src="/logo.png" alt="" width="56" height="56" style="border-radius: 12px;">
     </div>
     <rooster-app></rooster-app>
   </body>

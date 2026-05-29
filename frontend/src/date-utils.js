@@ -69,8 +69,8 @@ export function getWeekDays(weekOffset) {
 
 // elke medewerker een vaste kleur
 const EMPLOYEE_COLORS = [
-  '#1976D2', '#388E3C', '#7B1FA2', '#F57C00', '#00838F',
-  '#C62828', '#2E7D32', '#AD1457', '#0277BD', '#558B2F',
+  '#2F6F8F', '#B0602A', '#4F7F3A', '#8C4A6B', '#3F5FA8',
+  '#2E7D6B', '#9C6B1E', '#6B5BA8', '#A03E3E', '#476A7A',
 ];
 
 export function employeeColor(id) {
