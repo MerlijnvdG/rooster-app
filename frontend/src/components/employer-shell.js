@@ -1,7 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { authStore } from '../store.js';
 import { themeStore } from '../themeStore.js';
-import { CalendarIcon, UsersIcon, UserIcon, LogOutIcon, InboxIcon, ClockIcon, SunIcon, MoonIcon } from '../icons.js';
+import { getAllLeaveRequests } from '../api.js';
+import { base } from '../ui.js';
+import { CalendarIcon, UsersIcon, UserIcon, InboxIcon, ClockIcon } from '../icons.js';
 import './schedule-page.js';
 import './users-page.js';
 import './profile-page.js';
@@ -11,105 +13,127 @@ import './notification-bell.js';
 import './monthly-summary-page.js';
 
 class EmployerShell extends LitElement {
-  static properties = { _page: { state: true }, _dark: { state: true } };
+  static properties = {
+    _page: { state: true },
+    _dark: { state: true },
+    _menu: { state: true },
+    _openLeave: { state: true },
+  };
 
-  static styles = css`
-    :host { display: flex; flex-direction: column; min-height: 100vh; }
+  static styles = [base, css`
+    :host { display: grid; grid-template-columns: 224px 1fr; min-height: 100vh; }
 
-    header {
-      background: var(--app-bg-main);
-      border-bottom: 1px solid var(--app-border);
-      display: flex; align-items: center;
-      padding: 0 1.25rem; height: 60px; gap: 1rem;
-      position: sticky; top: 0; z-index: 100;
-      box-shadow: var(--app-shadow-header);
+    aside {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      background: var(--app-sidebar); border-right: 1px solid var(--app-border);
+      padding: 0.75rem 0.6rem;
     }
 
-    .brand { display: flex; align-items: center; flex-shrink: 0; }
-    .brand-logo { height: 32px; width: auto; display: block; border-radius: 50%; }
+    .brand { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.25rem 1.25rem 0.5rem; }
+    .brand img { width: 22px; height: 22px; border-radius: 5px; }
+    .brand span { flex: 1; font-weight: 700; font-size: 0.95rem; }
 
-    nav { display: flex; gap: 0.15rem; flex: 1; }
-
-    .nav-btn {
-      background: none; border: none;
-      color: var(--app-text-muted);
-      font-size: 0.88rem; font-weight: 500;
-      padding: 0.45rem 0.9rem; border-radius: 6px;
-      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    nav { display: flex; flex-direction: column; gap: 1px; }
+    nav a {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.38rem 0.5rem; border-radius: var(--radius-md); cursor: pointer;
+      color: var(--app-text-muted); font-size: 0.9rem; text-decoration: none;
     }
-    .nav-btn:hover { color: var(--app-text-dark); background: var(--app-bg-light); }
-    .nav-btn.active { color: var(--app-accent); background: var(--app-accent-light); font-weight: 700; }
+    nav a svg { color: var(--app-text-muted); opacity: 0.8; }
+    nav a:hover { background: var(--app-icon-btn-hover); color: var(--app-text-dark); }
+    nav a.active { color: var(--app-text-dark); font-weight: 700; }
+    nav a.active svg { color: var(--app-accent); opacity: 1; }
+    .n { margin-left: auto; font-size: 0.75rem; color: var(--app-text-muted); font-variant-numeric: tabular-nums; }
 
-    .user-area { display: flex; align-items: center; gap: 0.65rem; flex-shrink: 0; }
-    @media (max-width: 600px) { .user-area { margin-left: auto; } }
-
-    .user-name { font-size: 0.82rem; color: var(--app-text-muted); display: none; }
-    @media (min-width: 560px) { .user-name { display: block; } }
-
-    .theme-btn {
-      width: 34px; height: 34px; border-radius: 8px;
-      background: var(--app-icon-btn-bg);
-      border: 1.5px solid var(--app-border);
-      color: var(--app-text-muted);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s; flex-shrink: 0;
+    .me { margin-top: auto; position: relative; }
+    .me-btn {
+      display: flex; align-items: center; gap: 0.55rem; width: 100%;
+      font: inherit; font-size: 0.88rem; color: var(--app-text-dark); text-align: left;
+      background: none; border: none; border-radius: var(--radius-md); padding: 0.4rem 0.5rem; cursor: pointer;
     }
-    .theme-btn:hover { background: var(--app-icon-btn-hover); color: var(--app-text-dark); }
-
-    .avatar-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: var(--app-accent); border: 2px solid transparent;
-      color: #fff; font-size: 0.78rem; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
+    .me-btn:hover { background: var(--app-icon-btn-hover); }
+    .initials {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--app-border); color: var(--app-text-dark); font-size: 0.68rem; font-weight: 700;
     }
-    .avatar-btn:hover { opacity: 0.85; }
-    .avatar-btn.active { background: var(--app-bg-main); color: var(--app-accent); border-color: var(--app-accent); }
+    .me-btn .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .me-btn .dots { color: var(--app-text-muted); letter-spacing: 1px; }
 
-    .logout-btn {
-      background: none; border: 1.5px solid var(--app-border);
-      color: var(--app-text-muted); padding: 0.35rem 0.8rem;
-      border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    .menu {
+      position: absolute; bottom: calc(100% + 4px); left: 0; right: 0; z-index: 50;
+      background: var(--app-bg-main); border: 1px solid var(--app-border); border-radius: var(--radius-md);
+      box-shadow: var(--app-shadow-dropdown); padding: 0.25rem;
     }
-    .logout-btn:hover { border-color: var(--app-text-muted); color: var(--app-text-dark); }
-
-    main { flex: 1; }
-
-    .bottom-nav {
-      display: none; position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--app-bg-main); border-top: 1px solid var(--app-border);
-      padding: 0.4rem 0 max(0.4rem, env(safe-area-inset-bottom));
-      z-index: 100; box-shadow: var(--app-shadow-header);
+    .menu button {
+      display: block; width: 100%; text-align: left; font: inherit; font-size: 0.88rem;
+      background: none; border: none; color: var(--app-text-dark); padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); cursor: pointer;
     }
-    @media (max-width: 600px) { nav { display: none; } .bottom-nav { display: flex; } main { padding-bottom: 64px; } }
+    .menu button:hover { background: var(--app-icon-btn-hover); }
 
-    .bn-btn {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
-      background: none; border: none; color: var(--app-text-muted);
-      font-size: 0.65rem; padding: 0.4rem 0.25rem; cursor: pointer; transition: color 0.15s;
+    main { min-width: 0; }
+    .topbar, .bottom-nav { display: none; }
+
+    @media (max-width: 760px) {
+      :host { display: block; }
+      aside { display: none; }
+      .topbar {
+        display: flex; align-items: center; gap: 0.5rem; height: 50px; padding: 0 0.5rem 0 1rem;
+        background: var(--app-bg-main); border-bottom: 1px solid var(--app-border); position: sticky; top: 0; z-index: 100;
+      }
+      .topbar .brand { flex: 1; padding: 0; }
+      main { padding-bottom: 60px; }
+      .bottom-nav {
+        display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+        background: var(--app-bg-main); border-top: 1px solid var(--app-border);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .bn-btn {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+        font: inherit; font-size: 0.68rem; background: none; border: none;
+        color: var(--app-text-muted); padding: 0.45rem 0.1rem 0.4rem; cursor: pointer;
+      }
+      .bn-btn.active { color: var(--app-accent); font-weight: 700; }
     }
-    .bn-btn.active { color: var(--app-accent); }
-    .bn-icon { font-size: 1.25rem; line-height: 1; }
-  `;
+  `];
 
   constructor() {
     super();
     this._page = 'rooster';
     this._dark = themeStore.isDark;
+    this._menu = false;
+    this._openLeave = 0;
   }
 
   connectedCallback() {
     super.connectedCallback();
     this._onTheme = () => { this._dark = themeStore.isDark; };
+    this._onClick = (e) => { if (this._menu && !e.composedPath().some(el => el.classList?.contains('me'))) this._menu = false; };
     document.addEventListener('theme-change', this._onTheme);
+    document.addEventListener('pointerdown', this._onClick);
+    this._countLeave();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener('theme-change', this._onTheme);
+    document.removeEventListener('pointerdown', this._onClick);
   }
 
-  _toggleTheme() { themeStore.toggle(); }
+  async _countLeave() {
+    try {
+      const all = await getAllLeaveRequests();
+      this._openLeave = all.filter(r => r.status === 'PENDING').length;
+    } catch {}
+  }
+
+  _go(page) {
+    this._page = page;
+    this._menu = false;
+    window.scrollTo(0, 0);
+    if (page === 'verlof') this._countLeave();
+  }
 
   _initials() {
     return (authStore.user?.fullName || '').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
@@ -117,46 +141,60 @@ class EmployerShell extends LitElement {
 
   render() {
     const pages = [
-      { id: 'rooster',     label: 'Rooster',    icon: CalendarIcon(18) },
-      { id: 'medewerkers', label: 'Medewerkers', icon: UsersIcon(18)   },
-      { id: 'verlof',      label: 'Verlof',      icon: InboxIcon(18)   },
-      { id: 'uren',        label: 'Uren',        icon: ClockIcon(18)   },
-      { id: 'profiel',     label: 'Profiel',     icon: UserIcon(18)    },
+      { id: 'rooster',     label: 'Rooster',     icon: CalendarIcon },
+      { id: 'medewerkers', label: 'Medewerkers', icon: UsersIcon },
+      { id: 'verlof',      label: 'Verlof',      icon: InboxIcon },
+      { id: 'uren',        label: 'Uren',        icon: ClockIcon },
     ];
+    const active = this._page === 'archief' ? 'verlof' : this._page;
+
     return html`
-      <header>
-        <div class="brand"><img src="/logo.png" alt="Rooster" class="brand-logo"></div>
+      <aside>
+        <div class="brand">
+          <img src="/logo.png" alt=""><span>Rooster</span>
+          <notification-bell side="left" @navigate=${(e) => this._go(e.detail.page)}></notification-bell>
+        </div>
         <nav>
           ${pages.map(p => html`
-            <button class="nav-btn ${this._page === p.id ? 'active' : ''}" @click=${() => this._page = p.id}>${p.label}</button>
+            <a class=${active === p.id ? 'active' : ''} @click=${() => this._go(p.id)}>
+              ${p.icon(16)} ${p.label}
+              ${p.id === 'verlof' && this._openLeave ? html`<span class="n">${this._openLeave}</span>` : ''}
+            </a>
           `)}
         </nav>
-        <div class="user-area">
-          <span class="user-name">${authStore.user?.fullName}</span>
-          <notification-bell @navigate=${(e) => this._page = e.detail.page}></notification-bell>
-          <button class="theme-btn" @click=${this._toggleTheme} title="${this._dark ? 'Licht thema' : 'Donker thema'}">
-            ${this._dark ? SunIcon(16) : MoonIcon(16)}
+        <div class="me">
+          ${this._menu ? html`
+            <div class="menu">
+              <button @click=${() => this._go('profiel')}>Mijn profiel</button>
+              <button @click=${() => { themeStore.toggle(); this._menu = false; }}>${this._dark ? 'Licht thema' : 'Donker thema'}</button>
+              <button @click=${() => authStore.logout()}>Uitloggen</button>
+            </div>
+          ` : ''}
+          <button class="me-btn" @click=${() => this._menu = !this._menu}>
+            <span class="initials">${this._initials()}</span>
+            <span class="nm">${authStore.user?.fullName}</span>
+            <span class="dots">···</span>
           </button>
-          <button class="avatar-btn ${this._page === 'profiel' ? 'active' : ''}"
-            @click=${() => this._page = 'profiel'} title="Mijn profiel">${this._initials()}</button>
-          <button class="logout-btn" @click=${() => authStore.logout()}>${LogOutIcon(15)}</button>
         </div>
-      </header>
+      </aside>
+
+      <div class="topbar">
+        <div class="brand"><img src="/logo.png" alt=""><span>Rooster</span></div>
+        <notification-bell @navigate=${(e) => this._go(e.detail.page)}></notification-bell>
+      </div>
 
       <main>
         ${this._page === 'rooster'     ? html`<schedule-page></schedule-page>` : ''}
         ${this._page === 'medewerkers' ? html`<users-page></users-page>` : ''}
-        ${this._page === 'verlof'      ? html`<leave-requests-manager @show-archive=${() => this._page = 'archief'}></leave-requests-manager>` : ''}
-        ${this._page === 'archief'     ? html`<leave-archive-page @back=${() => this._page = 'verlof'}></leave-archive-page>` : ''}
+        ${this._page === 'verlof'      ? html`<leave-requests-manager @show-archive=${() => this._go('archief')} @changed=${this._countLeave}></leave-requests-manager>` : ''}
+        ${this._page === 'archief'     ? html`<leave-archive-page @back=${() => this._go('verlof')}></leave-archive-page>` : ''}
         ${this._page === 'uren'        ? html`<monthly-summary-page></monthly-summary-page>` : ''}
         ${this._page === 'profiel'     ? html`<profile-page></profile-page>` : ''}
       </main>
 
       <div class="bottom-nav">
-        ${pages.map(p => html`
-          <button class="bn-btn ${this._page === p.id ? 'active' : ''}" @click=${() => this._page = p.id}>
-            <span class="bn-icon">${p.icon}</span>${p.label}
-          </button>
+        ${[...pages, { id: 'profiel', label: 'Profiel', icon: UserIcon }].map(p => html`
+          <button class="bn-btn ${active === p.id ? 'active' : ''}" @click=${() => this._go(p.id)}>${p.icon(19)}${p.label}</button>
         `)}
       </div>
     `;
