@@ -1,6 +1,7 @@
-﻿import { LitElement, html, css } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { getMonthlySummary } from '../api.js';
 import { ChevronLeft, ChevronRight } from '../icons.js';
+import { base } from '../ui.js';
 
 const MONTHS = ['Januari','Februari','Maart','April','Mei','Juni',
                  'Juli','Augustus','September','Oktober','November','December'];
@@ -14,112 +15,26 @@ class MonthlySummaryPage extends LitElement {
     _error:   { state: true },
   };
 
-  static styles = css`
-    :host { display: block; padding: 1.25rem; max-width: 900px; margin: 0 auto; }
+  static styles = [base, css`
+    .monthnav { display: flex; gap: 0.25rem; }
+    .monthnav .btn { padding: 0.45rem 0.6rem; }
 
-    .top-bar {
-      display: flex; align-items: center; gap: 0.75rem;
-      margin-bottom: 1.5rem; flex-wrap: wrap;
-    }
+    .panel { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th { text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--app-text-muted); padding: 0.6rem 0.85rem; border-bottom: 1px solid var(--app-border); background: var(--app-card-header); }
+    td { padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--app-border); }
+    .r { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    th.r { font-family: var(--font-body); }
+    .loc { font-size: 0.8rem; color: var(--app-text-muted); }
+    .net { font-weight: 600; }
+    tfoot td { font-weight: 700; border-bottom: none; border-top: 2px solid var(--app-border); }
+    .note { font-size: 0.82rem; color: var(--app-text-muted); margin-top: 0.6rem; }
 
-    .month-nav {
-      display: flex; align-items: center; gap: 0.4rem; flex: 1;
+    @media (max-width: 600px) {
+      .hide-sm { display: none; }
+      td, th { padding-left: 0.6rem; padding-right: 0.6rem; }
     }
-    .month-label {
-      font-size: 1rem; font-weight: 800; color: var(--app-text-dark);
-      flex: 1; text-align: center; white-space: nowrap;
-    }
-    .nav-arrow {
-      width: 34px; height: 34px;
-      border: 1.5px solid var(--app-border);
-      background: var(--app-bg-main); border-radius: 8px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--app-text-muted);
-      transition: all 0.15s; flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .nav-arrow:hover { border-color: var(--app-accent); color: var(--app-accent); }
-    .nav-arrow:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    .export-btn {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: var(--app-bg-main); border: 1.5px solid var(--app-border);
-      color: var(--app-text-muted); border-radius: 8px;
-      padding: 0.45rem 0.9rem; font-size: 0.82rem; font-weight: 600;
-      cursor: pointer; white-space: nowrap; transition: all 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .export-btn:hover { border-color: var(--app-accent); color: var(--app-accent); }
-
-    /* tabel */
-    .table-wrap {
-      background: var(--app-bg-main);
-      border: 1px solid var(--app-border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-
-    table {
-      width: 100%; border-collapse: collapse;
-    }
-
-    thead tr {
-      background: var(--app-bg-light);
-      border-bottom: 2px solid var(--app-border);
-    }
-
-    th {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      font-size: 0.7rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--app-text-muted);
-      white-space: nowrap;
-    }
-    th.right { text-align: right; }
-
-    tbody tr {
-      border-bottom: 1px solid var(--app-border);
-      transition: background 0.12s;
-    }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--app-bg-main); }
-
-    td {
-      padding: 0.8rem 1rem;
-      font-size: 0.9rem; color: var(--app-text-dark);
-    }
-    td.right { text-align: right; }
-    td.muted  { color: var(--app-text-muted); }
-    td.net    { font-weight: 700; }
-
-    /* totaal */
-    tfoot tr {
-      background: var(--app-bg-light);
-      border-top: 2px solid var(--app-border);
-    }
-    tfoot td {
-      padding: 0.75rem 1rem;
-      font-size: 0.88rem; font-weight: 700;
-      color: var(--app-text-dark);
-    }
-    tfoot td.right { text-align: right; }
-
-    /* pauze kolom weg op mobiel */
-    @media (max-width: 520px) {
-      .col-break { display: none; }
-      th, td { padding-left: 0.75rem; padding-right: 0.75rem; }
-    }
-
-    .empty { text-align: center; padding: 3rem 1rem; color: var(--app-text-muted); font-size: 0.9rem; }
-    .error-bar {
-      background: var(--app-discount-light); border: 1px solid rgba(211,47,47,0.2);
-      color: var(--app-discount); border-radius: 8px; padding: 0.75rem 1rem;
-      font-size: 0.84rem; margin-bottom: 1rem;
-    }
-    .loading { padding: 2rem; text-align: center; color: var(--app-text-muted); }
-  `;
+  `];
 
   constructor() {
     super();
@@ -143,7 +58,7 @@ class MonthlySummaryPage extends LitElement {
       const raw = await getMonthlySummary(this._year, this._month);
       this._data = [...raw].sort((a, b) => a.employeeName.localeCompare(b.employeeName, 'nl'));
     } catch (e) {
-      this._error = e.message || 'Kon overzicht niet laden.';
+      this._error = e.message || 'Het overzicht kon niet geladen worden.';
     } finally {
       this._loading = false;
     }
@@ -203,65 +118,64 @@ class MonthlySummaryPage extends LitElement {
   }
 
   render() {
-    const totalShifts = this._data.reduce((s, e) => s + e.shiftCount, 0);
-    const totalGross  = this._data.reduce((s, e) => s + e.grossHours, 0);
-    const totalBreak  = this._data.reduce((s, e) => s + e.breakHours, 0);
-    const totalNet    = this._data.reduce((s, e) => s + e.netHours,   0);
+    const sum = (k) => this._data.reduce((t, e) => t + e[k], 0);
 
     return html`
-      <div class="top-bar">
-        <div class="month-nav">
-          <button class="nav-arrow" @click=${this._prevMonth}>${ChevronLeft(15)}</button>
-          <div class="month-label">${MONTHS[this._month - 1]} ${this._year}</div>
-          <button class="nav-arrow" @click=${this._nextMonth} ?disabled=${this._isCurrentMonth()}>
-            ${ChevronRight(15)}
-          </button>
+      <div class="page">
+        <div class="page-head">
+          <div>
+            <h1>${MONTHS[this._month - 1]} ${this._year}</h1>
+            <div class="sub">Gewerkte uren per medewerker</div>
+          </div>
+          <div class="actions">
+            <div class="monthnav">
+              <button class="btn" @click=${this._prevMonth} title="Vorige maand">${ChevronLeft(16)}</button>
+              <button class="btn" @click=${this._nextMonth} ?disabled=${this._isCurrentMonth()} title="Volgende maand">${ChevronRight(16)}</button>
+            </div>
+            <button class="btn" @click=${this._exportCSV} ?disabled=${this._loading || this._data.length === 0}>Download als CSV</button>
+          </div>
         </div>
-        ${!this._loading && this._data.length > 0 ? html`
-          <button class="export-btn" @click=${this._exportCSV}>Exporteer CSV</button>
-        ` : ''}
-      </div>
 
-      ${this._error ? html`<div class="error-bar">${this._error}</div>` : ''}
+        ${this._error ? html`<div class="error-bar">${this._error}</div>` : ''}
 
-      <div class="table-wrap">
-        ${this._loading ? html`<div class="loading">Laden...</div>` :
-          this._data.length === 0 ? html`<div class="empty">Geen diensten gevonden in ${MONTHS[this._month - 1]} ${this._year}.</div>` : html`
-          <table>
-            <thead>
-              <tr>
-                <th>Medewerker</th>
-                <th class="right">Diensten</th>
-                <th class="right">Bruto</th>
-                <th class="right col-break">Pauze</th>
-                <th class="right">Netto</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${this._data.map(e => html`
-                <tr>
-                  <td>
-                    <div>${e.employeeName}</div>
-                    ${e.locationName ? html`<div style="font-size:0.76rem;color:var(--app-text-muted,#626B74)">${e.locationName}</div>` : ''}
-                  </td>
-                  <td class="right muted">${e.shiftCount}</td>
-                  <td class="right muted">${this._hhmm(e.grossHours)}</td>
-                  <td class="right muted col-break">-${this._hhmm(e.breakHours)}</td>
-                  <td class="right net">${this._hhmm(e.netHours)}</td>
-                </tr>
-              `)}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td>Totaal</td>
-                <td class="right">${totalShifts}</td>
-                <td class="right">${this._hhmm(totalGross)}</td>
-                <td class="right col-break">-${this._hhmm(totalBreak)}</td>
-                <td class="right">${this._hhmm(totalNet)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        `}
+        ${this._loading ? html`<div class="loading">Laden...</div>`
+          : this._data.length === 0 ? html`<div class="empty panel">Geen diensten in ${MONTHS[this._month - 1].toLowerCase()}.</div>`
+          : html`
+            <div class="panel">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Medewerker</th>
+                    <th class="r">Diensten</th>
+                    <th class="r hide-sm">Gepland</th>
+                    <th class="r hide-sm">Pauze</th>
+                    <th class="r">Gewerkt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${this._data.map(e => html`
+                    <tr>
+                      <td>${e.employeeName}${e.locationName ? html`<div class="loc">${e.locationName}</div>` : ''}</td>
+                      <td class="r">${e.shiftCount}</td>
+                      <td class="r hide-sm">${this._hhmm(e.grossHours)}</td>
+                      <td class="r hide-sm">${this._hhmm(e.breakHours)}</td>
+                      <td class="r net">${this._hhmm(e.netHours)}</td>
+                    </tr>
+                  `)}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>Totaal</td>
+                    <td class="r">${sum('shiftCount')}</td>
+                    <td class="r hide-sm">${this._hhmm(sum('grossHours'))}</td>
+                    <td class="r hide-sm">${this._hhmm(sum('breakHours'))}</td>
+                    <td class="r">${this._hhmm(sum('netHours'))}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <p class="note">Per dienst gaat er een half uur pauze af.</p>
+          `}
       </div>
     `;
   }
