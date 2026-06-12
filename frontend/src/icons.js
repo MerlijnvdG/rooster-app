@@ -1,13 +1,5 @@
 import { html, svg } from 'lit';
 
-export const AppLogo = (size = 36) => html`<svg
-  width="${size}" height="${size}" viewBox="0 0 100 100"
-  aria-hidden="true" style="display:inline-block;vertical-align:middle;flex-shrink:0">
-  ${svg`
-    <g transform="scale(0.1953125)"><rect width="512" height="512" rx="112" fill="#1F5F5B"/> <g fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="6"> <path d="M128 112v288M224 112v288M320 112v288M416 112v288"/> </g> <rect x="96" y="142" width="232" height="58" rx="10" fill="#fff"/> <rect x="176" y="227" width="240" height="58" rx="10" fill="#FCE68A"/> <rect x="128" y="312" width="176" height="58" rx="10" fill="#fff"/></g>
-  `}
-</svg>`;
-
 const i = (size, children) => html`<svg
   width="${size}" height="${size}" viewBox="0 0 24 24"
   fill="none" stroke="currentColor" stroke-width="2"
