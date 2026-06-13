@@ -3,6 +3,8 @@ import { css } from 'lit';
 // gedeelde stijlen, elke component zet deze voor zijn eigen styles
 export const base = css`
   :host { font-family: var(--font-body); color: var(--app-text-dark); }
+  *, *::before, *::after { box-sizing: border-box; }
+  h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 
   h1, h2, h3 { font-family: var(--font-head); font-stretch: 88%; font-weight: 650; line-height: 1.15; }
 
