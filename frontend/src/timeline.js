@@ -90,8 +90,8 @@ export const timelineStyles = css`
   @media (max-width: 600px) {
     .tl-head, .tl-row { grid-template-columns: 1fr 40px; }
     .tl-head .tl-day { display: none; }
-    .tl-head .tl-track { grid-column: 1; }
-    .tl-row .tl-day { grid-column: 1 / -1; flex-direction: row; align-items: baseline; gap: 0.5rem; padding: 0.55rem 0.75rem 0; }
+    .tl-head .tl-track { grid-column: 1; margin-left: 0.75rem; }
+    .tl-row .tl-day { grid-column: 1 / -1; flex-direction: row; justify-content: flex-start; align-items: baseline; gap: 0.5rem; padding: 0.55rem 0.75rem 0; }
     .tl-row .tl-track { grid-column: 1; margin-left: 0.75rem; }
     .tick.odd { display: none; }
     .bar .when { display: none; }
