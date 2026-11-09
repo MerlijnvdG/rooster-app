@@ -4,7 +4,7 @@
   "description": "Roosters, verlof en uren voor je team",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0F2537",
+  "background_color": "#1E293B",
   "theme_color": "#2563EB",
   "orientation": "portrait",
   "icons": [

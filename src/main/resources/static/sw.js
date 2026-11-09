@@ -1,4 +1,4 @@
-const CACHE = 'rooster-v1';
+const CACHE = 'rooster-v2';
 
 self.addEventListener('install', e => {
   self.skipWaiting();

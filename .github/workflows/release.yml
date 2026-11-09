@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          VITE_API_BASE_URL: https://rooster-app.up.railway.app
+          VITE_API_BASE_URL: http://localhost:8080
         with:
           projectPath: frontend
           tagName: ${{ github.ref_name }}
@@ -52,10 +52,3 @@ jobs:
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
 
-      - name: Deploy to Railway
-        run: |
-          curl -s -X POST https://backboard.railway.app/graphql/v2 \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{"query":"mutation { serviceInstanceRedeploy(serviceId: \"f9d55309-3e5f-48d4-9870-1d9f7c937e2e\", environmentId: \"ccc8baa3-60f9-48f6-b852-c4135cea953a\") }"}'
-        shell: bash

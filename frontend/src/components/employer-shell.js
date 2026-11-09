@@ -3,7 +3,7 @@ import { authStore } from '../store.js';
 import { themeStore } from '../themeStore.js';
 import { getAllLeaveRequests } from '../api.js';
 import { base } from '../ui.js';
-import { CalendarIcon, UsersIcon, UserIcon, InboxIcon, ClockIcon } from '../icons.js';
+import { CalendarIcon, UsersIcon, UserIcon, InboxIcon, ClockIcon, MapPinIcon } from '../icons.js';
 import './schedule-page.js';
 import './users-page.js';
 import './profile-page.js';
@@ -11,6 +11,7 @@ import './leave-requests-manager.js';
 import './leave-archive-page.js';
 import './notification-bell.js';
 import './monthly-summary-page.js';
+import './locations-page.js';
 
 class EmployerShell extends LitElement {
   static properties = {
@@ -145,6 +146,7 @@ class EmployerShell extends LitElement {
       { id: 'medewerkers', label: 'Medewerkers', icon: UsersIcon },
       { id: 'verlof',      label: 'Verlof',      icon: InboxIcon },
       { id: 'uren',        label: 'Uren',        icon: ClockIcon },
+      { id: 'filialen',    label: 'Filialen',    icon: MapPinIcon },
     ];
     const active = this._page === 'archief' ? 'verlof' : this._page;
 
@@ -189,6 +191,7 @@ class EmployerShell extends LitElement {
         ${this._page === 'verlof'      ? html`<leave-requests-manager @show-archive=${() => this._go('archief')} @changed=${this._countLeave}></leave-requests-manager>` : ''}
         ${this._page === 'archief'     ? html`<leave-archive-page @back=${() => this._go('verlof')}></leave-archive-page>` : ''}
         ${this._page === 'uren'        ? html`<monthly-summary-page></monthly-summary-page>` : ''}
+        ${this._page === 'filialen'    ? html`<locations-page></locations-page>` : ''}
         ${this._page === 'profiel'     ? html`<profile-page></profile-page>` : ''}
       </main>
 

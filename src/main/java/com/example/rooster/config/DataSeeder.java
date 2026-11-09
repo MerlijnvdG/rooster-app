@@ -36,12 +36,12 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (userRepo.count() > 0) return; // al geseeded
 
-        Location centrum   = locationRepo.save(new Location("Centrum"));
-        Location zuid = locationRepo.save(new Location("Zuid"));
-        Location noord     = locationRepo.save(new Location("Noord"));
+        Location centrum = locationRepo.save(new Location("Centrum"));
+        Location noord   = locationRepo.save(new Location("Noord"));
+        Location zuid    = locationRepo.save(new Location("Zuid"));
 
         createUser("manager", "Sanne de Boer", User.Role.EMPLOYER);
-        createUser("admin",   "Admin",   User.Role.EMPLOYER);
+        createUser("admin",   "Admin",          User.Role.EMPLOYER);
 
         User emp1 = createUser("thomas.bakker", "Thomas Bakker",  User.Role.EMPLOYEE);
         User emp2 = createUser("lisa.jansen",   "Lisa Jansen",    User.Role.EMPLOYEE);
@@ -56,11 +56,11 @@ public class DataSeeder implements CommandLineRunner {
         LocalDate monday = LocalDate.now().with(java.time.DayOfWeek.MONDAY);
 
         seedWeek(monday,              emp1, emp2, emp3, centrum);
-        seedWeek(monday,              emp4, emp5, emp6, zuid);
-        seedWeek(monday,              emp7, emp8, emp9, noord);
+        seedWeek(monday,              emp4, emp5, emp6, noord);
+        seedWeek(monday,              emp7, emp8, emp9, zuid);
         seedWeek(monday.plusWeeks(1), emp1, emp2, emp3, centrum);
-        seedWeek(monday.plusWeeks(1), emp4, emp5, emp6, zuid);
-        seedWeek(monday.plusWeeks(1), emp7, emp8, emp9, noord);
+        seedWeek(monday.plusWeeks(1), emp4, emp5, emp6, noord);
+        seedWeek(monday.plusWeeks(1), emp7, emp8, emp9, zuid);
     }
 
     private User createUser(String username, String fullName, User.Role role) {

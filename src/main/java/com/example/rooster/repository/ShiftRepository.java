@@ -8,6 +8,7 @@ import java.util.List;
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
     List<Shift> findByEmployeeId(Long employeeId);
     List<Shift> findByLocationId(Long locationId);
+    boolean existsByLocationId(Long locationId);
     List<Shift> findByLocationIdAndDateBetween(Long locationId, LocalDate from, LocalDate to);
     List<Shift> findByEmployeeIdAndDateBetween(Long employeeId, LocalDate from, LocalDate to);
     List<Shift> findByDateBetweenOrderByEmployeeIdAscDateAsc(LocalDate from, LocalDate to);

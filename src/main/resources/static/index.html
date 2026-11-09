@@ -16,10 +16,24 @@
         navigator.serviceWorker.register('/sw.js');
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-MB1J_vTc.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-HuSAY4eo.css">
+    <script type="module" crossorigin src="/assets/index-9IAI4mcL.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DqeYIm3b.css">
   </head>
   <body>
+    <div id="splash" style="
+      position: fixed; inset: 0;
+      background: #1a1a1a;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1.25rem; z-index: 9999;
+    ">
+      <svg width="48" height="48" viewBox="0 0 48 48" style="animation: spin 0.9s linear infinite;">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="#333" stroke-width="4"/>
+        <path d="M24 4 a20 20 0 0 1 20 20" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <span style="color: #2563EB; font-family: system-ui, sans-serif; font-size: 0.95rem; font-weight: 600; letter-spacing: 0.3px;">Rooster laden</span>
+      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    </div>
     <rooster-app></rooster-app>
   </body>
 </html>

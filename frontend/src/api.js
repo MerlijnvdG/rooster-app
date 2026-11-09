@@ -30,6 +30,15 @@ export const loginWithCode = (code, password) =>
 export const getLocations = () =>
   fetch(`${BASE}/locations`, { headers: authHeaders() }).then(handleResponse);
 
+export const createLocation = (name) =>
+  fetch(`${BASE}/locations`, { method: 'POST', headers: authHeaders(), body: JSON.stringify({ name }) }).then(handleResponse);
+
+export const updateLocation = (id, name) =>
+  fetch(`${BASE}/locations/${id}`, { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ name }) }).then(handleResponse);
+
+export const deleteLocation = (id) =>
+  fetch(`${BASE}/locations/${id}`, { method: 'DELETE', headers: authHeaders() }).then(handleResponse);
+
 export const getMyShifts = (from, to) =>
   fetch(`${BASE}/shifts/my?from=${from}&to=${to}`, { headers: authHeaders() }).then(handleResponse);
 

@@ -27,9 +27,7 @@ public class ProdSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (userRepo.count() > 0) return;
 
-        locationRepo.save(new Location("Centrum"));
-        locationRepo.save(new Location("Zuid"));
-        locationRepo.save(new Location("Noord"));
+        locationRepo.save(new Location("Hoofdvestiging"));
 
         User admin = new User();
         admin.setUsername("admin");

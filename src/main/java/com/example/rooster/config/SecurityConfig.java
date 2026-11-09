@@ -31,7 +31,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
 
     // te overschrijven met CORS_ALLOWED_ORIGINS
-    @Value("${app.cors.allowed-origins:https://rooster-app.up.railway.app,http://localhost:*,https://localhost:*,tauri://localhost,https://tauri.localhost,http://tauri.localhost}")
+    @Value("${app.cors.allowed-origins:http://localhost:*,https://localhost:*,tauri://localhost,https://tauri.localhost,http://tauri.localhost}")
     private String allowedOriginsConfig;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
@@ -68,6 +68,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").denyAll()
                 .requestMatchers("/api/users/**").hasRole("EMPLOYER")
+                .requestMatchers(HttpMethod.GET, "/api/locations/**").authenticated()
+                .requestMatchers("/api/locations/**").hasRole("EMPLOYER")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
             )
